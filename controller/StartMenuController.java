@@ -8,17 +8,28 @@ import model.Difficulty;
 import view.BoardView;
 import view.StartMenu;
 
-public class StartMenuController implements ActionListener {
+public class StartMenuController {
     private StartMenu startMenu;
     public StartMenuController(StartMenu startMenu) {
         this.startMenu = startMenu;
-        this.startMenu.getStartButton().addActionListener(this);
+        init();
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Difficulty difficulty = startMenu.getSelectedDifficulty();
-        Board board = new Board(difficulty);
-        new BoardView(board);
-        startMenu.dispose();
-    }
+    private void init() {
+		// TODO Auto-generated method stub
+		startMenu.getStartButton().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Difficulty difficulty = startMenu.getSelectedDifficulty();
+		        Board board = new Board(difficulty);
+		        new BoardView(board);
+		        BoardView bv = new BoardView(board);
+
+		        new BoardController(bv, board);
+		        startMenu.dispose();
+			}
+		});
+		
+	}
 }

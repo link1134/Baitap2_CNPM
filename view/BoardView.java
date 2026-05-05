@@ -1,68 +1,226 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import model.Board;
 import model.Cell;
+import model.LoadData;
 
 public class BoardView extends JFrame {
-    private Board board;
-    private JButton[][] cells;
-    public BoardView(Board board) {
-        this.board = board;
-        initializeFrame();
-        initializeBoard();
-        setVisible(true);
-    }
+	private JPanel p1, p2, p11, p12, p13;
+	private LoadData data;
+	private Board board;
+	private int cellSize;
+	private JButton[][] cells;
+	private JButton smileBtn;
+	private LabelNumber lbtime, lbbomb;
 
-    private void initializeFrame() {
-        setTitle("Minesweeper");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
-    }
+	public BoardView(Board board) {
+		this.board = board;
+		data = new LoadData();
+		setIconImage(data.getListImage().get("title"));
+		initializeMenu();
+		initializeFrame();
+		initializeBoard();
+		setVisible(true);
+	}
 
-    private void initializeBoard() {
-        int rows = board.getRows();
-        int cols = board.getCols();
-        cells = new JButton[rows][cols];
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(rows, cols));
-        boardPanel.setBackground(new Color(40, 40, 40));
-        int cellSize;
-        if (cols >= 30) {
-            cellSize = 25;
-        }
-        else if (cols >= 16) {
-            cellSize = 32;
-        }
-        else {
-            cellSize = 40;
-        }
+	private void initializeMenu() {
+		// TODO Auto-generated method stub
+		JMenuBar menuBar = new JMenuBar();
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                JButton button = new JButton();
-                button.setPreferredSize(new Dimension(cellSize, cellSize));
-                button.setFocusPainted(false);
-                button.setBackground(new Color(90, 90, 90));
-                cells[row][col] = button;
-                boardPanel.add(button);
-            }
-        }
+		JMenu gameMenu = new JMenu("Game");
+		JMenu gameMenu2 = new JMenu("New Game");
+		JMenuItem easy = new JMenuItem("Easy");
+		JMenuItem medium = new JMenuItem("Medium");
+		JMenuItem hard = new JMenuItem("Hard");
+		JMenuItem exit = new JMenuItem("Exit");
+		JMenuItem importItem = new JMenuItem("Import");
+		JMenuItem exportItem = new JMenuItem("Export");
+		
+		gameMenu2.add(easy);
+		gameMenu2.add(medium);
+		gameMenu2.add(hard);
+		
+		gameMenu.add(importItem);
+		gameMenu.add(exportItem);
+		gameMenu.addSeparator();
+		gameMenu.add(exit);
+		
+		menuBar.add(gameMenu);
+		menuBar.add(gameMenu2);
 
-        add(boardPanel);
-        pack();
-        setLocationRelativeTo(null);
-    }
+		setJMenuBar(menuBar);
+	}
 
-    public JButton[][] getCells() {
-        return cells;
-    }
+	private void initializeFrame() {
+		setTitle("Minesweeper");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
+	}
+
+	private void initializeBoard() {
+		setLayout(new BorderLayout(20, 20));
+		add(p1 = new JPanel(new BorderLayout()), BorderLayout.NORTH);
+		p1.setBorder(BorderFactory.createLoweredBevelBorder());
+		p1.add(p11 = new JPanel(), BorderLayout.WEST);
+		p1.add(p12 = new JPanel(), BorderLayout.EAST);
+		p1.add(p13 = new JPanel(), BorderLayout.CENTER);
+		p11.add(lbbomb = new LabelNumber(this, "000"));
+		p12.add(lbtime = new LabelNumber(this, "000"));
+		Image smileImg = data.getListImage().get("smile").getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		
+		smileBtn = new JButton(new ImageIcon(smileImg));
+		smileBtn.setBorderPainted(false);
+		smileBtn.setFocusPainted(false);
+		smileBtn.setContentAreaFilled(false);
+		smileBtn.setMargin(new Insets(0, 0, 0, 0));
+		p13.add(smileBtn);
+		int rows = board.getRows();
+		int cols = board.getCols();
+		cells = new JButton[rows][cols];
+		JPanel boardPanel = new JPanel();
+		boardPanel.setLayout(new GridLayout(rows, cols));
+
+		if (cols >= 30) {
+			cellSize = 25;
+		} else if (cols >= 16) {
+			cellSize = 32;
+		} else {
+			cellSize = 40;
+		}
+
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				JButton button = new JButton();
+				button.setPreferredSize(new Dimension(cellSize, cellSize));
+				cells[row][col] = button;
+				Image scaled = data.getListImage().get("noUse").getScaledInstance(cellSize, cellSize,
+						Image.SCALE_SMOOTH);
+				button.setBorderPainted(false);
+				button.setFocusPainted(false);
+				button.setContentAreaFilled(false);
+				button.setMargin(new Insets(0, 0, 0, 0));
+				button.setIcon(new ImageIcon(scaled));
+				boardPanel.add(button);
+
+			}
+		}
+		add(boardPanel, BorderLayout.CENTER);
+		boardPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+		pack();
+		setLocationRelativeTo(null);
+	}
+	
+	public JPanel getP1() {
+		return p1;
+	}
+
+	public void setP1(JPanel p1) {
+		this.p1 = p1;
+	}
+
+	public JPanel getP2() {
+		return p2;
+	}
+
+	public void setP2(JPanel p2) {
+		this.p2 = p2;
+	}
+
+	public JPanel getP11() {
+		return p11;
+	}
+
+	public void setP11(JPanel p11) {
+		this.p11 = p11;
+	}
+
+	public JPanel getP12() {
+		return p12;
+	}
+
+	public void setP12(JPanel p12) {
+		this.p12 = p12;
+	}
+
+	public JPanel getP13() {
+		return p13;
+	}
+
+	public void setP13(JPanel p13) {
+		this.p13 = p13;
+	}
+
+	public LoadData getData() {
+		return data;
+	}
+
+	public void setData(LoadData data) {
+		this.data = data;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+
+	public JButton getSmileBtn() {
+		return smileBtn;
+	}
+
+	public void setSmileBtn(JButton smileBtn) {
+		this.smileBtn = smileBtn;
+	}
+
+	public LabelNumber getLbtime() {
+		return lbtime;
+	}
+
+	public void setLbtime(LabelNumber lbtime) {
+		this.lbtime = lbtime;
+	}
+
+	public LabelNumber getLbbomb() {
+		return lbbomb;
+	}
+
+	public void setLbbomb(LabelNumber lbbomb) {
+		this.lbbomb = lbbomb;
+	}
+
+	public void setCells(JButton[][] cells) {
+		this.cells = cells;
+	}
+	
+	public int getCellSize() {
+		return cellSize;
+	}
+
+	public void setCellSize(int cellSize) {
+		this.cellSize = cellSize;
+	}
+
+	public JButton[][] getCells() {
+		return cells;
+	}
 }
