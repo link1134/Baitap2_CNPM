@@ -1,5 +1,5 @@
 package model;
 
 public enum GameState {
-	RUNNING,WIN,LOSE
+	RUNNING,WIN,LOSE,PAUSE
 }

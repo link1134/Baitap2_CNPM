@@ -17,11 +17,17 @@ public class LabelNumber extends JLabel {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	protected void paintComponent(Graphics g) {
 		// TODO Auto-generated method stub
-		super.paint(g);
+		super.paintComponent(g);
 		g.drawImage(bv.getData().getListImage().get(String.valueOf(number.charAt(0))), 0, 0, 26, 46, null);
 		g.drawImage(bv.getData().getListImage().get(String.valueOf(number.charAt(1))), 26, 0, 26, 46, null);
 		g.drawImage(bv.getData().getListImage().get(String.valueOf(number.charAt(2))), 52, 0, 26, 46, null);
+	}
+
+	public void setNumber(String number) {
+		// TODO Auto-generated method stub
+		this.number = number;
+	    repaint();
 	}
 }

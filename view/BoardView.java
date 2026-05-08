@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 
 import model.Board;
 import model.Cell;
-import model.LoadData;
 
 public class BoardView extends JFrame {
 	private JPanel p1, p2, p11, p12, p13;
@@ -29,7 +28,8 @@ public class BoardView extends JFrame {
 	private JButton[][] cells;
 	private JButton smileBtn;
 	private LabelNumber lbtime, lbbomb;
-
+	private JMenuItem easy,medium,hard,exit,importItem,exportItem,pauseItem;
+	
 	public BoardView(Board board) {
 		this.board = board;
 		data = new LoadData();
@@ -46,17 +46,17 @@ public class BoardView extends JFrame {
 
 		JMenu gameMenu = new JMenu("Game");
 		JMenu gameMenu2 = new JMenu("New Game");
-		JMenuItem easy = new JMenuItem("Easy");
-		JMenuItem medium = new JMenuItem("Medium");
-		JMenuItem hard = new JMenuItem("Hard");
-		JMenuItem exit = new JMenuItem("Exit");
-		JMenuItem importItem = new JMenuItem("Import");
-		JMenuItem exportItem = new JMenuItem("Export");
-		
+		easy = new JMenuItem("Easy");
+		medium = new JMenuItem("Medium");
+		hard = new JMenuItem("Hard");
+		exit = new JMenuItem("Exit");
+		importItem = new JMenuItem("Import");
+		exportItem = new JMenuItem("Export");
+		pauseItem = new JMenuItem("Pause");
 		gameMenu2.add(easy);
 		gameMenu2.add(medium);
 		gameMenu2.add(hard);
-		
+		gameMenu.add(pauseItem);
 		gameMenu.add(importItem);
 		gameMenu.add(exportItem);
 		gameMenu.addSeparator();
@@ -116,6 +116,7 @@ public class BoardView extends JFrame {
 				button.setBorderPainted(false);
 				button.setFocusPainted(false);
 				button.setContentAreaFilled(false);
+				
 				button.setMargin(new Insets(0, 0, 0, 0));
 				button.setIcon(new ImageIcon(scaled));
 				boardPanel.add(button);
@@ -128,6 +129,54 @@ public class BoardView extends JFrame {
 		setLocationRelativeTo(null);
 	}
 	
+	public JMenuItem getEasy() {
+		return easy;
+	}
+
+	public void setEasy(JMenuItem easy) {
+		this.easy = easy;
+	}
+
+	public JMenuItem getMedium() {
+		return medium;
+	}
+
+	public void setMedium(JMenuItem medium) {
+		this.medium = medium;
+	}
+
+	public JMenuItem getHard() {
+		return hard;
+	}
+
+	public void setHard(JMenuItem hard) {
+		this.hard = hard;
+	}
+
+	public JMenuItem getExit() {
+		return exit;
+	}
+
+	public void setExit(JMenuItem exit) {
+		this.exit = exit;
+	}
+
+	public JMenuItem getImportItem() {
+		return importItem;
+	}
+
+	public void setImportItem(JMenuItem importItem) {
+		this.importItem = importItem;
+	}
+
+	public JMenuItem getExportItem() {
+		return exportItem;
+	}
+
+	public void setExportItem(JMenuItem exportItem) {
+		this.exportItem = exportItem;
+	}
+
 	public JPanel getP1() {
 		return p1;
 	}
@@ -222,5 +271,12 @@ public class BoardView extends JFrame {
 
 	public JButton[][] getCells() {
 		return cells;
+	}
+	public JMenuItem getPauseItem() {
+		return pauseItem;
+	}
+
+	public void setPauseItem(JMenuItem pauseItem) {
+		this.pauseItem = pauseItem;
 	}
 }

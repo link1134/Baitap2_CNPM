@@ -18,7 +18,6 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import model.Difficulty;
-import model.LoadData;
 
 public class StartMenu extends JFrame {
 	private LoadData data;
@@ -103,4 +102,7 @@ public class StartMenu extends JFrame {
 	public JButton getStartButton() {
         return startButton;
     }
+    public static void main(String[] args) {
+		StartMenu sm = new StartMenu();
+	}
 }

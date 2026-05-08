@@ -9,27 +9,28 @@ import view.BoardView;
 import view.StartMenu;
 
 public class StartMenuController {
-    private StartMenu startMenu;
-    public StartMenuController(StartMenu startMenu) {
-        this.startMenu = startMenu;
-        init();
-    }
-    private void init() {
+	private StartMenu startMenu;
+
+	public StartMenuController(StartMenu startMenu) {
+		this.startMenu = startMenu;
+		init();
+	}
+
+	private void init() {
 		// TODO Auto-generated method stub
 		startMenu.getStartButton().addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				Difficulty difficulty = startMenu.getSelectedDifficulty();
-		        Board board = new Board(difficulty);
-		        new BoardView(board);
-		        BoardView bv = new BoardView(board);
+				Board board = new Board(difficulty);
+				BoardView bv = new BoardView(board);
 
-		        new BoardController(bv, board);
-		        startMenu.dispose();
+				new BoardController(bv, board);
+				startMenu.dispose();
 			}
 		});
-		
+
 	}
 }

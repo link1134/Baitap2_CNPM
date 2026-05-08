@@ -1,21 +1,24 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Random;
 
 public class Board {
-
 	private Cell[][] grid;
 	private int rows;
 	private int cols;
 	private int mineCount;
+	private int flagCount;
 	private boolean firstMove = true;
 	private GameState gameState;
+	private int elapsedTime;
 
 	public Board(Difficulty difficulty) {
 		this.rows = difficulty.getRows();
 		this.cols = difficulty.getCols();
 		this.mineCount = (int) (rows * cols * difficulty.getMineDensity());
 		this.gameState = GameState.RUNNING;
+		this.elapsedTime = 0;
 		createBoard();
 	}
 
@@ -26,6 +29,34 @@ public class Board {
 				grid[row][col] = new Cell();
 			}
 		}
+	}
+
+	public void increaseTime() {
+		elapsedTime++;
+	}
+
+	public int getElapsedTime() {
+		return elapsedTime;
+	}
+
+	public void setElapsedTime(int elapsedTime) {
+		this.elapsedTime = elapsedTime;
+	}
+
+	public int getFlagCount() {
+		return flagCount;
+	}
+
+	public void setFlagCount(int flagCount) {
+		this.flagCount = flagCount;
+	}
+
+	public boolean isFirstMove() {
+		return firstMove;
+	}
+
+	public void setFirstMove(boolean firstMove) {
+		this.firstMove = firstMove;
 	}
 
 	public Cell[][] getGrid() {
@@ -86,13 +117,55 @@ public class Board {
 		}
 
 		cell.setRevealed(true);
+		if (cell.isMine()) {
+			cell.setExploded(true);
+			revealAllMines();
+			gameState = GameState.LOSE;
+			return;
+		}
 
 		if (!cell.isMine() && cell.getNearbyMines() == 0) {
 
 			floodFill(r, c);
 		}
-		
+		if (checkWin()) {
+
+			gameState = GameState.WIN;
+		}
 	}
+
+	private void revealAllMines() {
+
+		for (int row = 0; row < rows; row++) {
+
+			for (int col = 0; col < cols; col++) {
+
+				if (grid[row][col].isMine()) {
+
+					grid[row][col].setRevealed(true);
+				}
+			}
+		}
+	}
+
+	private boolean checkWin() {
+
+		for (int row = 0; row < rows; row++) {
+
+			for (int col = 0; col < cols; col++) {
+
+				Cell cell = grid[row][col];
+
+				if (!cell.isMine() && !cell.isRevealed()) {
+
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	private void floodFill(int r, int c) {
 
 		int[] dr = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -183,6 +256,13 @@ public class Board {
 
 			placed++;
 		}
+	}
+
+	public int getRemainingMines() {
+		if (mineCount - flagCount < 0 || firstMove) {
+			return 0;
+		} else
+			return mineCount - flagCount;
 	}
 
 }
