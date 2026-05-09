@@ -37,6 +37,55 @@ public class BoardController {
 				restartGame();
 			}
 		});
+		bv.getExportItem().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GameState oldState = b.getGameState();
+				if (oldState == GameState.RUNNING) {
+					b.setGameState(GameState.PAUSE);
+				}
+				String data = b.exportData();
+				b.setGameState(oldState);
+				JTextArea area = new JTextArea(data);
+				area.setLineWrap(true);
+				area.setWrapStyleWord(true);
+				area.setEditable(false);
+				JOptionPane.showMessageDialog(bv, new JScrollPane(area), "Export Data",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		bv.getImportItem().addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String data = JOptionPane.showInputDialog(bv, 
+		                "Nhập chuỗi save:", "Import Game", JOptionPane.PLAIN_MESSAGE);
+		        if (data == null || data.trim().isBlank()) {
+		            return;
+		        }
+		        Board importedBoard = Board.importData(data.trim());
+		        if (importedBoard == null) {
+		            JOptionPane.showMessageDialog(bv, 
+		                "Dữ liệu save không hợp lệ!", "Import thất bại", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+		        if (timer != null) {
+		            timer.stop();
+		        }
+		        bv.dispose();
+		        BoardView newView = new BoardView(importedBoard);
+		        BoardController controller = new BoardController(newView, importedBoard);
+		        if (importedBoard.getGameState() == GameState.PAUSE) {
+		            newView.getPauseItem().setText("Unpause");
+		            newView.getOverlay().setVisible(true);
+		        }
+		        controller.updateView();
+		        String text = String.format("%03d", importedBoard.getElapsedTime());
+		        newView.getLbtime().setNumber(text);
+		        int remain = importedBoard.getRemainingMines();
+		        String mineText = String.format("%03d", remain);
+		        newView.getLbbomb().setNumber(mineText);
+		    }
+		});
 		bv.getEasy().addActionListener(new ActionListener() {
 
 			@Override
