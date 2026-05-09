@@ -22,6 +22,7 @@ import model.Cell;
 
 public class BoardView extends JFrame {
 	private JPanel p1, p2, p11, p12, p13;
+	private PauseOverlay overlay;
 	private LoadData data;
 	private Board board;
 	private int cellSize;

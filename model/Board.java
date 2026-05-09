@@ -12,8 +12,10 @@ public class Board {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
+	private Difficulty difficulty;
 
 	public Board(Difficulty difficulty) {
+		this.difficulty = difficulty;
 		this.rows = difficulty.getRows();
 		this.cols = difficulty.getCols();
 		this.mineCount = (int) (rows * cols * difficulty.getMineDensity());
@@ -264,5 +266,7 @@ public class Board {
 		} else
 			return mineCount - flagCount;
 	}
-
+	public Difficulty getDifficulty() {
+	    return difficulty;
+	}
 }

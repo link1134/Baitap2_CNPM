@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import model.Board;
 import model.Cell;
+import model.Difficulty;
 import model.GameState;
 import view.BoardView;
 
@@ -30,6 +31,35 @@ public class BoardController {
 	}
 
 	private void init() {
+		bv.getSmileBtn().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				restartGame();
+			}
+		});
+		bv.getEasy().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startNewGame(Difficulty.EASY);
+			}
+		});
+
+		bv.getMedium().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startNewGame(Difficulty.MEDIUM);
+			}
+		});
+
+		bv.getHard().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startNewGame(Difficulty.HARD);
+			}
+		});
 		timer = new Timer(1000, new ActionListener() {
 
 			@Override
@@ -73,8 +103,9 @@ public class BoardController {
 			}
 		}
 	}
+
 	protected void updateView() {
-		
+
 		for (int row = 0; row < b.getRows(); row++) {
 			for (int col = 0; col < b.getCols(); col++) {
 				JButton btn = bv.getCells()[row][col];
@@ -132,6 +163,30 @@ public class BoardController {
 		String text = String.format("%03d", remain);
 		bv.getLbbomb().setNumber(text);
 		bv.getLbbomb().repaint();
+	}
+
+	private void restartGame() {
+
+		if (timer != null) {
+			timer.stop();
+		}
+
+		bv.dispose();
+
+		Board newBoard = new Board(b.getDifficulty());
+		BoardView newView = new BoardView(newBoard);
+		new BoardController(newView, newBoard);
+	}
+
+	private void startNewGame(Difficulty difficulty) {
+
+		if (timer != null) {
+			timer.stop();
+		}
+		bv.dispose();
+		Board newBoard = new Board(difficulty);
+		BoardView newView = new BoardView(newBoard);
+		new BoardController(newView, newBoard);
 	}
 
 	public BoardView getBv() {
