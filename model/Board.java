@@ -32,6 +32,48 @@ public class Board {
 			}
 		}
 	}
+	public String exportData() {
+	    try {
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        ObjectOutputStream oos = new ObjectOutputStream(baos);
+	        
+	        oos.writeObject(this);
+	        oos.close();
+
+	        String data = Base64.getEncoder().encodeToString(baos.toByteArray());
+	        return SAVE_VERSION + "," + data;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+	public static Board importData(String input) {
+	    if (input == null || input.trim().isEmpty()) {
+	        return null;
+	    }
+	    try {
+	        String data = input.trim();
+	        int version = 1;
+	        if (data.contains(",")) {
+	            String[] parts = data.split(",", 2);
+	            version = Integer.parseInt(parts[0]);
+	            data = parts[1];
+	        }
+	        byte[] bytes = Base64.getDecoder().decode(data);
+	        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+	        Board board = (Board) ois.readObject();
+	        ois.close();
+	        if (board.getGameState() == null) {
+	            board.setGameState(GameState.RUNNING);
+	        }
+	        return board;
+	    } catch (Exception e) {
+	        System.err.println("Lỗi khi import save: " + e.getMessage());
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 	public void increaseTime() {
 		elapsedTime++;
