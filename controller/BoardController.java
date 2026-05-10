@@ -75,11 +75,15 @@ public class BoardController {
 		bv.getExportItem().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// 3. getGameState() lấy trạng thái game
 				GameState oldState = b.getGameState();
 				if (oldState == GameState.RUNNING) {
+					// 4. setGameState(PAUSE) tạm dừng game nếu đang chạy
 					b.setGameState(GameState.PAUSE);
 				}
+				// 5. exportData() → Serialize + Base64
 				String data = b.exportData();
+				// 6. Khôi phục trạng thái game cũ
 				b.setGameState(oldState);
 				JTextArea area = new JTextArea(data);
 				area.setLineWrap(true);
@@ -97,23 +101,32 @@ public class BoardController {
 				if (data == null || data.trim().isBlank()) {
 					return;
 				}
+				// 4. importData(chuỗi save)
 				Board importedBoard = Board.importData(data.trim());
 				if (importedBoard == null) {
+					// 5a. Hiển thị thông báo lỗi
 					JOptionPane.showMessageDialog(bv, "Dữ liệu save không hợp lệ!", "Import thất bại",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				// 5b. Dừng timer hiện tại
 				if (timer != null) {
 					timer.stop();
 				}
+				// 6. dispose() BoardView cũ
 				bv.dispose();
+				// 7. Tạo BoardView mới từ dữ liệu import
 				BoardView newView = new BoardView(importedBoard);
+				// 8. Tạo BoardController mới
 				BoardController controller = new BoardController(newView, importedBoard);
+				// Xử lý giao diện theo trạng thái game được lưu
 				if (importedBoard.getGameState() == GameState.PAUSE) {
 					newView.getPauseItem().setText("Unpause");
 					newView.getOverlay().setVisible(true);
 				}
+				// 9. Cập nhật UI
 				controller.updateView();
+				// Cập nhật thời gian và số mìn
 				String text = String.format("%03d", importedBoard.getElapsedTime());
 				newView.getLbtime().setNumber(text);
 				int remain = importedBoard.getRemainingMines();
