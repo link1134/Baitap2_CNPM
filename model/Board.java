@@ -1,5 +1,10 @@
 package model;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
 
@@ -13,6 +18,7 @@ public class Board {
 	private GameState gameState;
 	private int elapsedTime;
 	private Difficulty difficulty;
+	private static final int SAVE_VERSION = 1;
 
 	public Board(Difficulty difficulty) {
 		this.difficulty = difficulty;
