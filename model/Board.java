@@ -9,330 +9,333 @@ import java.io.Serializable;
 import java.util.Random;
 
 public class Board implements Serializable {
-    private Cell[][] grid;
-    private int rows;
-    private int cols;
-    private int mineCount;
-    private int flagCount;
-    private boolean firstMove = true;
-    private GameState gameState;
-    private int elapsedTime;
-    private Difficulty difficulty;
-    private static final int SAVE_VERSION = 1;
-
-    public Board(Difficulty difficulty) {
-        this.difficulty = difficulty;
-        this.rows = difficulty.getRows();
-        this.cols = difficulty.getCols();
-        this.mineCount = (int) (rows * cols * difficulty.getMineDensity());
-        this.gameState = GameState.RUNNING;
-        this.elapsedTime = 0;
-        createBoard();
-    }
-
-    private void createBoard() {
-        grid = new Cell[rows][cols];
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                grid[row][col] = new Cell();
-            }
-        }
-    }
-
-    public String exportData() {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-
-            oos.writeObject(this);
-            oos.close();
-
-            String data = Base64.getEncoder().encodeToString(baos.toByteArray());
-            return SAVE_VERSION + "," + data;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Board importData(String input) {
-        if (input == null || input.trim().isEmpty()) {
-            return null;
-        }
-        try {
-            String data = input.trim();
-            int version = 1;
-            if (data.contains(",")) {
-                String[] parts = data.split(",", 2);
-                version = Integer.parseInt(parts[0]);
-                data = parts[1];
-            }
-            byte[] bytes = Base64.getDecoder().decode(data);
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            Board board = (Board) ois.readObject();
-            ois.close();
-            if (board.getGameState() == null) {
-                board.setGameState(GameState.RUNNING);
-            }
-            return board;
-        } catch (Exception e) {
-            System.err.println("Lỗi khi import save: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public void increaseTime() {
-        elapsedTime++;
-    }
-
-    public int getElapsedTime() {
-        return elapsedTime;
-    }
-
-    public void setElapsedTime(int elapsedTime) {
-        this.elapsedTime = elapsedTime;
-    }
-
-    public int getFlagCount() {
-        return flagCount;
-    }
-
-    public void setFlagCount(int flagCount) {
-        this.flagCount = flagCount;
-    }
-
-    public boolean isFirstMove() {
-        return firstMove;
-    }
-
-    public void setFirstMove(boolean firstMove) {
-        this.firstMove = firstMove;
-    }
+	private Cell[][] grid;
+	private int rows;
+	private int cols;
+	private int mineCount;
+	private int flagCount;
+	private boolean firstMove = true;
+	private GameState gameState;
+	private int elapsedTime;
+	private Difficulty difficulty;
+	private static final int SAVE_VERSION = 1;
+
+	public Board(Difficulty difficulty) {
+		this.difficulty = difficulty;
+		this.rows = difficulty.getRows();
+		this.cols = difficulty.getCols();
+		this.mineCount = (int) (rows * cols * difficulty.getMineDensity());
+		this.gameState = GameState.RUNNING;
+		this.elapsedTime = 0;
+		createBoard();
+	}
+
+	private void createBoard() {
+		grid = new Cell[rows][cols];
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < cols; col++) {
+				grid[row][col] = new Cell();
+			}
+		}
+	}
+
+	public String exportData() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+			oos.writeObject(this);
+			oos.close();
+
+			String data = Base64.getEncoder().encodeToString(baos.toByteArray());
+			return SAVE_VERSION + "," + data;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static Board importData(String input) {
+		if (input == null || input.trim().isEmpty()) {
+			return null;
+		}
+		try {
+			String data = input.trim();
+			int version = 1;
+			if (data.contains(",")) {
+				String[] parts = data.split(",", 2);
+				version = Integer.parseInt(parts[0]);
+				data = parts[1];
+			}
+			byte[] bytes = Base64.getDecoder().decode(data);
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
+			Board board = (Board) ois.readObject();
+			ois.close();
+			if (board.getGameState() == null) {
+				board.setGameState(GameState.RUNNING);
+			}
+			return board;
+		} catch (Exception e) {
+			System.err.println("Lỗi khi import save: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void increaseTime() {
+		elapsedTime++;
+	}
+
+	public int getElapsedTime() {
+		return elapsedTime;
+	}
+
+	public void setElapsedTime(int elapsedTime) {
+		this.elapsedTime = elapsedTime;
+	}
+
+	public int getFlagCount() {
+		return flagCount;
+	}
+
+	public void setFlagCount(int flagCount) {
+		this.flagCount = flagCount;
+	}
+
+	public boolean isFirstMove() {
+		return firstMove;
+	}
+
+	public void setFirstMove(boolean firstMove) {
+		this.firstMove = firstMove;
+	}
+
+	public Cell[][] getGrid() {
+		return grid;
+	}
+
+	public void setGrid(Cell[][] grid) {
+		this.grid = grid;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public int getCols() {
+		return cols;
+	}
+
+	public void setCols(int cols) {
+		this.cols = cols;
+	}
+
+	public int getMineCount() {
+		return mineCount;
+	}
+
+	public void setMineCount(int mineCount) {
+		this.mineCount = mineCount;
+	}
+
+	public GameState getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+
+	public void reveal(int r, int c) {
+
+		Cell cell = grid[r][c];
+
+		if (cell.isRevealed() || cell.isFlagged()) {
+			return;
+		}
+		// 3.3 đến 3.4: Xử lí trong trường hợp ô nhấn là ô đầu tiên mở.
+		if (firstMove) {
+			// 3.3: Đặt mìn vào bàn chơi
+			placeMines(r, c);
+			// 3.4: Tính toán số mìn ở xung quanh
+			calculateNearbyMines();
+			firstMove = false;
+		}
+		// 3.5: Goi class Cell, đặt trạng thái được mở của ô thành true, tức ô được mở
+		// và cho thấy nó là gì.
+		cell.setRevealed(true);
+		// :3.6 đến 3.7: Xử lí trong trường hợp ô là ô có mìn
+		if (cell.isMine()) {
+			cell.setExploded(true);
+			// 3.6: Hiển thị tất cả mìn trong bàn chơi
+			revealAllMines();
+			// 3.7: Chuyển trạng thái của bàn chơi hiện tại thành LOSE, tức thua cuộc.
+			gameState = GameState.LOSE;
+			return;
+		}
+		// 3.8 đến 3.10: Xử lí trường hợp nếu ô rỗng và những ô xung quanh không có mìn
+		if (!cell.isMine() && cell.getNearbyMines() == 0) {
+			// 3.8: Thực hiện mở càng nhiều ô trống xung quanh càng tốt.
+			floodFill(r, c);
+		}
+		// 3.9: Kiểm tra game đã thắng chưa
+		if (checkWin()) {
+			// 3.10: Nếu game đã thắng, đặt trạng thái của bàn chơi thành WIN, tức thắng
+			// cuộc
+			gameState = GameState.WIN;
+		}
+	}
 
-    public Cell[][] getGrid() {
-        return grid;
-    }
+	public void toggleFlag(int r, int c) {
+		if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c].isRevealed()) {
+			return;
+		}
+		Cell cell = grid[r][c];
+		cell.setFlagged(!cell.isFlagged());
+		if (cell.isFlagged()) {
+			flagCount++;
+		} else {
+			flagCount--;
+		}
+	}
 
-    public void setGrid(Cell[][] grid) {
-        this.grid = grid;
-    }
+	private void revealAllMines() {
 
-    public int getRows() {
-        return rows;
-    }
+		for (int row = 0; row < rows; row++) {
 
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
+			for (int col = 0; col < cols; col++) {
 
-    public int getCols() {
-        return cols;
-    }
+				if (grid[row][col].isMine()) {
 
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
+					grid[row][col].setRevealed(true);
+				}
+			}
+		}
+	}
 
-    public int getMineCount() {
-        return mineCount;
-    }
+	private boolean checkWin() {
 
-    public void setMineCount(int mineCount) {
-        this.mineCount = mineCount;
-    }
+		for (int row = 0; row < rows; row++) {
 
-    public GameState getGameState() {
-        return gameState;
-    }
+			for (int col = 0; col < cols; col++) {
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
+				Cell cell = grid[row][col];
 
-    public void reveal(int r, int c) {
+				if (!cell.isMine() && !cell.isRevealed()) {
 
-        Cell cell = grid[r][c];
+					return false;
+				}
+			}
+		}
 
-        if (cell.isRevealed() || cell.isFlagged()) {
-            return;
-        }
+		return true;
+	}
 
-        if (firstMove) {
+	private void floodFill(int r, int c) {
 
-            placeMines(r, c);
+		int[] dr = { -1, -1, -1, 0, 0, 1, 1, 1 };
+		int[] dc = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-            calculateNearbyMines();
+		for (int i = 0; i < 8; i++) {
 
-            firstMove = false;
-        }
+			int nr = r + dr[i];
+			int nc = c + dc[i];
 
-        cell.setRevealed(true);
-        if (cell.isMine()) {
-            cell.setExploded(true);
-            revealAllMines();
-            gameState = GameState.LOSE;
-            return;
-        }
+			if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
 
-        if (!cell.isMine() && cell.getNearbyMines() == 0) {
+				continue;
+			}
 
-            floodFill(r, c);
-        }
-        if (checkWin()) {
+			Cell neighbor = grid[nr][nc];
 
-            gameState = GameState.WIN;
-        }
-    }
+			if (neighbor.isRevealed() || neighbor.isMine() || neighbor.isFlagged()) {
 
-    public void toggleFlag(int r, int c) {
-        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c].isRevealed()) {
-            return;
-        }
+				continue;
+			}
 
-        Cell cell = grid[r][c];
-        cell.setFlagged(!cell.isFlagged());
+			neighbor.setRevealed(true);
 
-        if (cell.isFlagged()) {
-            flagCount++;
-        } else {
-            flagCount--;
-        }
-    }
+			if (neighbor.getNearbyMines() == 0) {
 
-    private void revealAllMines() {
+				floodFill(nr, nc);
+			}
+		}
+	}
 
-        for (int row = 0; row < rows; row++) {
+	private void calculateNearbyMines() {
 
-            for (int col = 0; col < cols; col++) {
+		int[] dr = { -1, -1, -1, 0, 0, 1, 1, 1 };
+		int[] dc = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-                if (grid[row][col].isMine()) {
+		for (int row = 0; row < rows; row++) {
 
-                    grid[row][col].setRevealed(true);
-                }
-            }
-        }
-    }
+			for (int col = 0; col < cols; col++) {
 
-    private boolean checkWin() {
+				if (grid[row][col].isMine()) {
+					continue;
+				}
 
-        for (int row = 0; row < rows; row++) {
+				int count = 0;
 
-            for (int col = 0; col < cols; col++) {
+				for (int i = 0; i < 8; i++) {
 
-                Cell cell = grid[row][col];
+					int nr = row + dr[i];
+					int nc = col + dc[i];
 
-                if (!cell.isMine() && !cell.isRevealed()) {
+					if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
 
-                    return false;
-                }
-            }
-        }
+						continue;
+					}
 
-        return true;
-    }
+					if (grid[nr][nc].isMine()) {
+						count++;
+					}
+				}
 
-    private void floodFill(int r, int c) {
+				grid[row][col].setNearbyMines(count);
+			}
+		}
+	}
 
-        int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
-        int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+	private void placeMines(int safeRow, int safeCol) {
+		// TODO Auto-generated method stub
+		Random random = new Random();
 
-        for (int i = 0; i < 8; i++) {
+		int placed = 0;
 
-            int nr = r + dr[i];
-            int nc = c + dc[i];
+		while (placed < mineCount) {
 
-            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
+			int row = random.nextInt(rows);
+			int col = random.nextInt(cols);
 
-                continue;
-            }
+			if (grid[row][col].isMine()) {
+				continue;
+			}
 
-            Cell neighbor = grid[nr][nc];
+			if (Math.abs(row - safeRow) <= 1 && Math.abs(col - safeCol) <= 1) {
 
-            if (neighbor.isRevealed() || neighbor.isMine() || neighbor.isFlagged()) {
+				continue;
+			}
 
-                continue;
-            }
+			grid[row][col].setMine(true);
 
-            neighbor.setRevealed(true);
+			placed++;
+		}
+	}
 
-            if (neighbor.getNearbyMines() == 0) {
+	public int getRemainingMines() {
+		if (mineCount - flagCount < 0 || firstMove) {
+			return 0;
+		} else
+			return mineCount - flagCount;
+	}
 
-                floodFill(nr, nc);
-            }
-        }
-    }
-
-    private void calculateNearbyMines() {
-
-        int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
-        int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
-
-        for (int row = 0; row < rows; row++) {
-
-            for (int col = 0; col < cols; col++) {
-
-                if (grid[row][col].isMine()) {
-                    continue;
-                }
-
-                int count = 0;
-
-                for (int i = 0; i < 8; i++) {
-
-                    int nr = row + dr[i];
-                    int nc = col + dc[i];
-
-                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
-
-                        continue;
-                    }
-
-                    if (grid[nr][nc].isMine()) {
-                        count++;
-                    }
-                }
-
-                grid[row][col].setNearbyMines(count);
-            }
-        }
-    }
-
-    private void placeMines(int safeRow, int safeCol) {
-        // TODO Auto-generated method stub
-        Random random = new Random();
-
-        int placed = 0;
-
-        while (placed < mineCount) {
-
-            int row = random.nextInt(rows);
-            int col = random.nextInt(cols);
-
-            if (grid[row][col].isMine()) {
-                continue;
-            }
-
-            if (Math.abs(row - safeRow) <= 1 && Math.abs(col - safeCol) <= 1) {
-
-                continue;
-            }
-
-            grid[row][col].setMine(true);
-
-            placed++;
-        }
-    }
-
-    public int getRemainingMines() {
-        if (mineCount - flagCount < 0 || firstMove) {
-            return 0;
-        } else
-            return mineCount - flagCount;
-    }
-
-    public Difficulty getDifficulty() {
-        return difficulty;
-    }
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
 }
