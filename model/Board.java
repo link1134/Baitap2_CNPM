@@ -44,10 +44,12 @@ public class Board implements Serializable {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 
+			// Serialize toàn bộ object Board
 			oos.writeObject(this);
 			oos.close();
 
 			String data = Base64.getEncoder().encodeToString(baos.toByteArray());
+			// Thêm version để tương thích sau này
 			return SAVE_VERSION + "," + data;
 
 		} catch (Exception e) {
@@ -63,6 +65,7 @@ public class Board implements Serializable {
 		try {
 			String data = input.trim();
 			int version = 1;
+			// Hỗ trợ version
 			if (data.contains(",")) {
 				String[] parts = data.split(",", 2);
 				version = Integer.parseInt(parts[0]);
@@ -72,6 +75,7 @@ public class Board implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
 			Board board = (Board) ois.readObject();
 			ois.close();
+			// Fix trạng thái nếu bị null sau khi deserialize
 			if (board.getGameState() == null) {
 				board.setGameState(GameState.RUNNING);
 			}
