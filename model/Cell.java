@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Cell {
+public class Cell implements Serializable{
 	private boolean mine;
 	private boolean revealed;
 	private boolean flagged;

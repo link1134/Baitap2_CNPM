@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -29,8 +30,8 @@ public class BoardView extends JFrame {
 	private JButton[][] cells;
 	private JButton smileBtn;
 	private LabelNumber lbtime, lbbomb;
-	private JMenuItem easy,medium,hard,exit,importItem,exportItem,pauseItem;
-	
+	private JMenuItem easy, medium, hard, exit, importItem, exportItem, pauseItem;
+
 	public BoardView(Board board) {
 		this.board = board;
 		data = new LoadData();
@@ -62,7 +63,7 @@ public class BoardView extends JFrame {
 		gameMenu.add(exportItem);
 		gameMenu.addSeparator();
 		gameMenu.add(exit);
-		
+
 		menuBar.add(gameMenu);
 		menuBar.add(gameMenu2);
 
@@ -78,24 +79,34 @@ public class BoardView extends JFrame {
 
 	private void initializeBoard() {
 		setLayout(new BorderLayout(20, 20));
+
 		add(p1 = new JPanel(new BorderLayout()), BorderLayout.NORTH);
+
 		p1.setBorder(BorderFactory.createLoweredBevelBorder());
+
 		p1.add(p11 = new JPanel(), BorderLayout.WEST);
 		p1.add(p12 = new JPanel(), BorderLayout.EAST);
 		p1.add(p13 = new JPanel(), BorderLayout.CENTER);
+
 		p11.add(lbbomb = new LabelNumber(this, "000"));
 		p12.add(lbtime = new LabelNumber(this, "000"));
+
 		Image smileImg = data.getListImage().get("smile").getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-		
+
 		smileBtn = new JButton(new ImageIcon(smileImg));
+
 		smileBtn.setBorderPainted(false);
 		smileBtn.setFocusPainted(false);
 		smileBtn.setContentAreaFilled(false);
 		smileBtn.setMargin(new Insets(0, 0, 0, 0));
+
 		p13.add(smileBtn);
+
 		int rows = board.getRows();
 		int cols = board.getCols();
+
 		cells = new JButton[rows][cols];
+
 		JPanel boardPanel = new JPanel();
 		boardPanel.setLayout(new GridLayout(rows, cols));
 
@@ -108,28 +119,56 @@ public class BoardView extends JFrame {
 		}
 
 		for (int row = 0; row < rows; row++) {
+
 			for (int col = 0; col < cols; col++) {
+
 				JButton button = new JButton();
+
 				button.setPreferredSize(new Dimension(cellSize, cellSize));
+
 				cells[row][col] = button;
+
 				Image scaled = data.getListImage().get("noUse").getScaledInstance(cellSize, cellSize,
 						Image.SCALE_SMOOTH);
+
 				button.setBorderPainted(false);
 				button.setFocusPainted(false);
 				button.setContentAreaFilled(false);
-				
-				button.setMargin(new Insets(0, 0, 0, 0));
-				button.setIcon(new ImageIcon(scaled));
-				boardPanel.add(button);
 
+				button.setMargin(new Insets(0, 0, 0, 0));
+
+				button.setIcon(new ImageIcon(scaled));
+
+				boardPanel.add(button);
 			}
 		}
-		add(boardPanel, BorderLayout.CENTER);
+
 		boardPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+
+		// ===== OVERLAY =====
+
+		overlay = new PauseOverlay();
+		overlay.setVisible(false);
+
+		JLayeredPane layeredPane = new JLayeredPane();
+
+		Dimension size = boardPanel.getPreferredSize();
+
+		layeredPane.setPreferredSize(size);
+
+		boardPanel.setBounds(0, 0, size.width, size.height);
+		overlay.setBounds(0, 0, size.width, size.height);
+
+		layeredPane.add(boardPanel, Integer.valueOf(0));
+		layeredPane.add(overlay, Integer.valueOf(1));
+
+		add(layeredPane, BorderLayout.CENTER);
+
 		pack();
+
 		setLocationRelativeTo(null);
 	}
-	
+
 	public JMenuItem getEasy() {
 		return easy;
 	}
@@ -261,7 +300,7 @@ public class BoardView extends JFrame {
 	public void setCells(JButton[][] cells) {
 		this.cells = cells;
 	}
-	
+
 	public int getCellSize() {
 		return cellSize;
 	}
@@ -273,6 +312,7 @@ public class BoardView extends JFrame {
 	public JButton[][] getCells() {
 		return cells;
 	}
+
 	public JMenuItem getPauseItem() {
 		return pauseItem;
 	}
@@ -280,6 +320,7 @@ public class BoardView extends JFrame {
 	public void setPauseItem(JMenuItem pauseItem) {
 		this.pauseItem = pauseItem;
 	}
+
 	public PauseOverlay getOverlay() {
 		return overlay;
 	}

@@ -33,6 +33,39 @@ public class BoardController {
 	}
 
 	private void init() {
+		bv.getPauseItem().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (b.getGameState() == GameState.WIN || b.getGameState() == GameState.LOSE) {
+					return;
+				}
+
+				if (b.getGameState() == GameState.RUNNING) {
+
+					b.setGameState(GameState.PAUSE);
+
+					bv.getPauseItem().setText("Unpause");
+
+					bv.getOverlay().setVisible(true);
+
+					timer.stop();
+
+				} else if (b.getGameState() == GameState.PAUSE) {
+
+					b.setGameState(GameState.RUNNING);
+
+					bv.getPauseItem().setText("Pause");
+
+					bv.getOverlay().setVisible(false);
+
+					if (!b.isFirstMove()) {
+						timer.start();
+					}
+				}
+			}
+		});
 		bv.getSmileBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -57,36 +90,36 @@ public class BoardController {
 			}
 		});
 		bv.getImportItem().addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        String data = JOptionPane.showInputDialog(bv, 
-		                "Nhập chuỗi save:", "Import Game", JOptionPane.PLAIN_MESSAGE);
-		        if (data == null || data.trim().isBlank()) {
-		            return;
-		        }
-		        Board importedBoard = Board.importData(data.trim());
-		        if (importedBoard == null) {
-		            JOptionPane.showMessageDialog(bv, 
-		                "Dữ liệu save không hợp lệ!", "Import thất bại", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-		        if (timer != null) {
-		            timer.stop();
-		        }
-		        bv.dispose();
-		        BoardView newView = new BoardView(importedBoard);
-		        BoardController controller = new BoardController(newView, importedBoard);
-		        if (importedBoard.getGameState() == GameState.PAUSE) {
-		            newView.getPauseItem().setText("Unpause");
-		            newView.getOverlay().setVisible(true);
-		        }
-		        controller.updateView();
-		        String text = String.format("%03d", importedBoard.getElapsedTime());
-		        newView.getLbtime().setNumber(text);
-		        int remain = importedBoard.getRemainingMines();
-		        String mineText = String.format("%03d", remain);
-		        newView.getLbbomb().setNumber(mineText);
-		    }
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String data = JOptionPane.showInputDialog(bv, "Nhập chuỗi save:", "Import Game",
+						JOptionPane.PLAIN_MESSAGE);
+				if (data == null || data.trim().isBlank()) {
+					return;
+				}
+				Board importedBoard = Board.importData(data.trim());
+				if (importedBoard == null) {
+					JOptionPane.showMessageDialog(bv, "Dữ liệu save không hợp lệ!", "Import thất bại",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (timer != null) {
+					timer.stop();
+				}
+				bv.dispose();
+				BoardView newView = new BoardView(importedBoard);
+				BoardController controller = new BoardController(newView, importedBoard);
+				if (importedBoard.getGameState() == GameState.PAUSE) {
+					newView.getPauseItem().setText("Unpause");
+					newView.getOverlay().setVisible(true);
+				}
+				controller.updateView();
+				String text = String.format("%03d", importedBoard.getElapsedTime());
+				newView.getLbtime().setNumber(text);
+				int remain = importedBoard.getRemainingMines();
+				String mineText = String.format("%03d", remain);
+				newView.getLbbomb().setNumber(mineText);
+			}
 		});
 		bv.getEasy().addActionListener(new ActionListener() {
 

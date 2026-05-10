@@ -8,7 +8,7 @@ import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
 
-public class Board {
+public class Board implements Serializable{
 	private Cell[][] grid;
 	private int rows;
 	private int cols;
