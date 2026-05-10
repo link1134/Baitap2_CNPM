@@ -170,7 +170,8 @@ public class BoardController {
 					public void mousePressed(MouseEvent e) {
 						if (b.getGameState() != GameState.RUNNING) {
 							return;
-						} else if (e.getButton() == MouseEvent.BUTTON1) {
+						} 
+						if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
 							boolean firstMove = b.isFirstMove();
 
 							b.reveal(r, c);
@@ -179,8 +180,10 @@ public class BoardController {
 								timer.start();
 							}
 
+						} else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
+							b.toggleFlag(r, c);
 						}
-						updateView();
+						bv.refreshBoard();
 						updateBombUI();
 					}
 				});
@@ -189,57 +192,7 @@ public class BoardController {
 	}
 
 	protected void updateView() {
-
-		for (int row = 0; row < b.getRows(); row++) {
-			for (int col = 0; col < b.getCols(); col++) {
-				JButton btn = bv.getCells()[row][col];
-				Cell cell = b.getGrid()[row][col];
-				if (cell.isFlagged() && !cell.isMine() && b.getGameState() != GameState.RUNNING) {
-					btn.setIcon(getScaledIcon("boomX"));
-
-				} else if (!cell.isRevealed()) {
-					if (cell.isFlagged()) {
-						btn.setIcon(getScaledIcon("co"));
-					} else {
-						btn.setIcon(getScaledIcon("noUse"));
-					}
-				} else {
-					if (cell.isMine()) {
-						if (cell.isExploded()) {
-							btn.setIcon(getScaledIcon("boomRed"));
-						} else {
-							btn.setIcon(getScaledIcon("boom"));
-						}
-					} else {
-						String key = "b" + cell.getNearbyMines();
-						btn.setIcon(getScaledIcon(key));
-					}
-				}
-				btn.repaint();
-			}
-		}
-		if (b.getGameState() == GameState.WIN) {
-			bv.getSmileBtn().setIcon(getSmileIcon("smileWin"));
-			JOptionPane.showMessageDialog(bv, "Bạn đã thắng !");
-			bv.getPauseItem().setEnabled(false);
-
-		} else if (b.getGameState() == GameState.LOSE) {
-			bv.getSmileBtn().setIcon(getSmileIcon("smileLose"));
-			JOptionPane.showMessageDialog(bv, "Bạn đã thua !");
-			bv.getPauseItem().setEnabled(false);
-		}
-	}
-
-	private ImageIcon getScaledIcon(String key) {
-		Image img = bv.getData().getListImage().get(key).getScaledInstance(bv.getCellSize(), bv.getCellSize(),
-				Image.SCALE_SMOOTH);
-
-		return new ImageIcon(img);
-	}
-
-	private ImageIcon getSmileIcon(String key) {
-		Image img = bv.getData().getListImage().get(key).getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-		return new ImageIcon(img);
+		bv.refreshBoard();
 	}
 
 	private void updateBombUI() {

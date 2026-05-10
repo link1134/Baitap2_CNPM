@@ -20,13 +20,13 @@ import javax.swing.UIManager;
 import model.Difficulty;
 
 public class StartMenu extends JFrame {
-	private LoadData data;
+    private LoadData data;
     private JComboBox<Difficulty> difficultyBox;
     private JButton startButton;
 
     public StartMenu() {
-    	data = new LoadData();
-    	setIconImage(data.getListImage().get("title"));
+        data = new LoadData();
+        setIconImage(data.getListImage().get("title"));
         initializeFrame();
         initializeComponents();
         setVisible(true);
@@ -86,23 +86,24 @@ public class StartMenu extends JFrame {
     public Difficulty getSelectedDifficulty() {
         return (Difficulty) difficultyBox.getSelectedItem();
     }
-    
+
     public JComboBox<Difficulty> getDifficultyBox() {
-		return difficultyBox;
-	}
+        return difficultyBox;
+    }
 
-	public void setDifficultyBox(JComboBox<Difficulty> difficultyBox) {
-		this.difficultyBox = difficultyBox;
-	}
+    public void setDifficultyBox(JComboBox<Difficulty> difficultyBox) {
+        this.difficultyBox = difficultyBox;
+    }
 
-	public void setStartButton(JButton startButton) {
-		this.startButton = startButton;
-	}
+    public void setStartButton(JButton startButton) {
+        this.startButton = startButton;
+    }
 
-	public JButton getStartButton() {
+    public JButton getStartButton() {
         return startButton;
     }
+
     public static void main(String[] args) {
-		StartMenu sm = new StartMenu();
-	}
+        StartMenu sm = new StartMenu();
+    }
 }
