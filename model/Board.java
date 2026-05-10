@@ -199,10 +199,6 @@ public class Board implements Serializable {
         } else {
             flagCount--;
         }
-
-        if (getRemainingMines() < 5 && getRemainingMines() >= 0) {
-            System.out.println("Cảnh báo: Sắp hết cờ!");
-        }
     }
 
     private void revealAllMines() {
