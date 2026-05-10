@@ -280,4 +280,7 @@ public class BoardView extends JFrame {
 	public void setPauseItem(JMenuItem pauseItem) {
 		this.pauseItem = pauseItem;
 	}
+	public PauseOverlay getOverlay() {
+		return overlay;
+	}
 }
