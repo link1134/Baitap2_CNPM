@@ -31,6 +31,7 @@ public class BoardView extends JFrame {
     private int cellSize;
     private JButton[][] cells;
     private JButton smileBtn;
+    private JButton hintBtn;
     private LabelNumber lbtime, lbbomb;
     private JMenuItem easy, medium, hard, exit, importItem, exportItem, pauseItem;
 
@@ -103,6 +104,14 @@ public class BoardView extends JFrame {
         smileBtn.setMargin(new Insets(0, 0, 0, 0));
 
         p13.add(smileBtn);
+
+        // Nút Hint - đặt cạnh nút smile để người chơi dễ truy cập
+        hintBtn = new JButton("Hint");
+        hintBtn.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
+        hintBtn.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        hintBtn.setFocusPainted(false);
+        hintBtn.setToolTipText("Gợi ý một ô an toàn (miễn phí)");
+        p13.add(hintBtn);
 
         int rows = board.getRows();
         int cols = board.getCols();
@@ -204,11 +213,18 @@ public class BoardView extends JFrame {
             smileBtn.setIcon(getSmileIcon("smileWin"));
             JOptionPane.showMessageDialog(this, "Bạn đã thắng !");
             pauseItem.setEnabled(false);
+            if (hintBtn != null) hintBtn.setEnabled(false);
 
         } else if (board.getGameState() == GameState.LOSE) {
             smileBtn.setIcon(getSmileIcon("smileLose"));
             JOptionPane.showMessageDialog(this, "Bạn đã thua !");
             pauseItem.setEnabled(false);
+            if (hintBtn != null) hintBtn.setEnabled(false);
+        } else if (board.getGameState() == GameState.RUNNING) {
+            if (hintBtn != null) hintBtn.setEnabled(true);
+        } else {
+            // PAUSE or other → disable hint
+            if (hintBtn != null) hintBtn.setEnabled(false);
         }
     }
 
@@ -378,5 +394,13 @@ public class BoardView extends JFrame {
 
     public PauseOverlay getOverlay() {
         return overlay;
+    }
+
+    public JButton getHintBtn() {
+        return hintBtn;
+    }
+
+    public void setHintBtn(JButton hintBtn) {
+        this.hintBtn = hintBtn;
     }
 }

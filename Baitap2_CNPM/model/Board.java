@@ -365,4 +365,140 @@ public class Board implements Serializable {
     public Difficulty getDifficulty() {
         return difficulty;
     }
+
+    /**
+     * Cung cấp gợi ý (Hint) cho người chơi bằng cách tự động mở một ô an toàn.
+     * Sử dụng logic suy luận cơ bản trước (nếu cờ xung quanh == số mìn của ô đã mở → các ô còn lại an toàn),
+     * sau đó fallback chọn ô an toàn bất kỳ (ưu tiên ô có số nhỏ).
+     */
+    public boolean giveHint() {
+        // [UC_09_GH]: 9.0.3 Hệ thống kiểm tra xem ván chơi có đang ở trạng thái cho phép nhận gợi ý không.
+        if (gameState != GameState.RUNNING) {
+            return false;
+        }
+
+        // [UC_09_GH]: 9.0.4 Tại bước 9.0.3, nếu đây là lần đầu tiên (chưa click lần nào).
+        // Hệ thống không đưa ra gợi ý (vì mìn chưa được đặt, hoặc để người chơi tự bắt đầu).
+        if (firstMove) {
+            return false;
+        }
+
+        // [UC_09_GH]: 9.0.5 Hệ thống tìm vị trí ô gợi ý an toàn.
+        int[] hintPos = findSafeHintPosition();
+        if (hintPos == null) {
+            // [UC_09_GH - Luồng thay thế]: 9.1.0 Không còn ô nào an toàn để gợi ý (các ô còn lại đều là mìn hoặc đã xử lý).
+            return false;
+        }
+
+        int r = hintPos[0];
+        int c = hintPos[1];
+
+        // [UC_09_GH]: 9.0.6 Hệ thống thực hiện mở ô gợi ý bằng cách tái sử dụng logic reveal.
+        // Điều này đảm bảo flood fill, kiểm tra thắng/thua, cập nhật gameState được xử lý nhất quán.
+        reveal(r, c);
+
+        // [UC_09_GH]: 9.0.7 Sau khi mở ô gợi ý, hệ thống trả kết quả thành công về cho Controller.
+        return true;
+    }
+
+    /**
+     * Tìm một ô an toàn để gợi ý.
+     * Ưu tiên 1: Suy luận từ các ô số đã mở + cờ (logic cơ bản của người chơi giỏi).
+     * Ưu tiên 2: Bất kỳ ô chưa mở, chưa cắm cờ, không chứa mìn nào (đảm bảo an toàn tuyệt đối).
+     * Trong fallback ưu tiên ô có nearbyMines thấp (0 trước) để gợi ý có ích hơn.
+     */
+    private int[] findSafeHintPosition() {
+        // --- Bước suy luận (Deduction) ---
+        // [UC_09_GH]: 9.0.5.1 Quét các ô đã mở có số mìn lân cận > 0.
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                Cell cell = grid[r][c];
+                if (!cell.isRevealed() || cell.getNearbyMines() == 0) {
+                    continue;
+                }
+
+                int flaggedCount = countFlaggedNeighbors(r, c);
+                // [UC_09_GH]: 9.0.5.2 Nếu số cờ xung quanh bằng đúng số mìn lân cận của ô.
+                // → Tất cả các ô lân cận chưa cắm cờ và chưa mở đều AN TOÀN (không thể là mìn).
+                if (flaggedCount == cell.getNearbyMines()) {
+                    int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+                    int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+                    for (int i = 0; i < 8; i++) {
+                        int nr = r + dr[i];
+                        int nc = c + dc[i];
+                        if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+                        Cell neighbor = grid[nr][nc];
+                        if (!neighbor.isRevealed() && !neighbor.isFlagged()) {
+                            // [UC_09_GH]: 9.0.5.3 Tìm thấy ô suy luận được là an toàn → trả về ngay.
+                            return new int[]{nr, nc};
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- Fallback: chọn ô an toàn bất kỳ (đảm bảo không bao giờ gợi ý mìn) ---
+        // [UC_09_GH]: 9.0.5.4 Nếu không có nước đi suy luận được, chọn ô chưa mở, chưa cắm cờ, không phải mìn.
+        // Ưu tiên ô có số lân cận từ 1-8 trước (gợi ý mang thông tin hữu ích, hạn chế flood fill quá mạnh).
+        // Chỉ dùng ô 0 nếu không còn lựa chọn nào.
+        int bestR = -1, bestC = -1;
+        int bestNearby = 9;
+        // Pass 1: ô có nearbyMines >=1
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                Cell cell = grid[r][c];
+                if (!cell.isRevealed() && !cell.isFlagged() && !cell.isMine()) {
+                    int n = cell.getNearbyMines();
+                    if (n >= 1 && n < bestNearby) {
+                        bestNearby = n;
+                        bestR = r;
+                        bestC = c;
+                    }
+                }
+            }
+        }
+        if (bestR >= 0) {
+            return new int[]{bestR, bestC};
+        }
+        // Pass 2: chấp nhận ô 0
+        bestNearby = 9;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                Cell cell = grid[r][c];
+                if (!cell.isRevealed() && !cell.isFlagged() && !cell.isMine()) {
+                    if (cell.getNearbyMines() < bestNearby) {
+                        bestNearby = cell.getNearbyMines();
+                        bestR = r;
+                        bestC = c;
+                    }
+                }
+            }
+        }
+        if (bestR >= 0) {
+            return new int[]{bestR, bestC};
+        }
+
+        // Không còn ô an toàn nào
+        return null;
+    }
+
+    /**
+     * Đếm số lượng ô lân cận đã được cắm cờ (dùng cho logic suy luận hint).
+     */
+    private int countFlaggedNeighbors(int r, int c) {
+        int count = 0;
+        int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+        for (int i = 0; i < 8; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                if (grid[nr][nc].isFlagged()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }

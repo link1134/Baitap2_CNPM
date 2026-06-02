@@ -51,6 +51,7 @@ public class BoardController {
 					bv.getOverlay().setVisible(true);
 
 					timer.stop();
+					if (bv.getHintBtn() != null) bv.getHintBtn().setEnabled(false);
 
 				} else if (b.getGameState() == GameState.PAUSE) {
 
@@ -63,6 +64,7 @@ public class BoardController {
 					if (!b.isFirstMove()) {
 						timer.start();
 					}
+					if (bv.getHintBtn() != null) bv.getHintBtn().setEnabled(true);
 				}
 			}
 		});
@@ -72,6 +74,29 @@ public class BoardController {
 				restartGame();
 			}
 		});
+
+		// Xử lý nút Hint (UC_09_GH)
+		bv.getHintBtn().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// [UC_09_GH]: 9.0.1 - 9.0.2 Người chơi nhấn Hint → BoardView gửi sự kiện → Controller nhận.
+				if (b.getGameState() != GameState.RUNNING) {
+					return;
+				}
+				// Gọi logic hint trong model (sẽ tự reveal một ô an toàn nếu có)
+				boolean didHint = b.giveHint();
+				// Cập nhật giao diện sau khi hint (có thể đã mở ô, flood fill, hoặc win/lose)
+				bv.refreshBoard();
+				updateBombUI();
+
+				// Nếu hint không thực hiện được gì (hết ô an toàn hoặc firstMove), có thể thông báo nhẹ
+				if (!didHint && b.getGameState() == GameState.RUNNING) {
+					JOptionPane.showMessageDialog(bv, "Không có gợi ý phù hợp lúc này.", "Hint",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
 		bv.getExportItem().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -112,6 +137,9 @@ public class BoardController {
 				if (importedBoard.getGameState() == GameState.PAUSE) {
 					newView.getPauseItem().setText("Unpause");
 					newView.getOverlay().setVisible(true);
+					if (newView.getHintBtn() != null) newView.getHintBtn().setEnabled(false);
+				} else {
+					if (newView.getHintBtn() != null) newView.getHintBtn().setEnabled(true);
 				}
 				controller.updateView();
 				String text = String.format("%03d", importedBoard.getElapsedTime());
