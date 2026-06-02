@@ -17,17 +17,19 @@ public class Board implements Serializable {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
-	private Difficulty difficulty;
+	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
 
-	public Board(Difficulty difficulty) {
-		this.difficulty = difficulty;
-		this.rows = difficulty.getRows();
-		this.cols = difficulty.getCols();
-		this.mineCount = (int) (rows * cols * difficulty.getMineDensity());
-		this.gameState = GameState.RUNNING;
-		this.elapsedTime = 0;
-		createBoard();
+	public Board(GameConfig config) {
+		this.config = config;
+		this.rows = config.getRows();
+	    this.cols = config.getCols();
+	    this.mineCount = config.getMineCount();
+
+	    this.gameState = GameState.RUNNING;
+	    this.elapsedTime = 0;
+
+	    createBoard();
 	}
 
 	private void createBoard() {
@@ -311,7 +313,7 @@ public class Board implements Serializable {
 		Random random = new Random();
 
 		int placed = 0;
-
+		
 		while (placed < mineCount) {
 
 			int row = random.nextInt(rows);
@@ -339,7 +341,8 @@ public class Board implements Serializable {
 			return mineCount - flagCount;
 	}
 
-	public Difficulty getDifficulty() {
-		return difficulty;
+	public GameConfig getConfig() {
+	    return config;
 	}
+	
 }

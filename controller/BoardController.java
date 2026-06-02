@@ -30,36 +30,41 @@ public class BoardController {
 
 	private void init() {
 		bv.getPauseItem().addActionListener(new ActionListener() {
-			//7.1 và 7.2 Xử lí sự kiện người chơi nhấn nút Pause.
+			// 7.1 và 7.2 Xử lí sự kiện người chơi nhấn nút Pause.
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//Từ 7.3 đến 7.14: Thực hiện pause hoặc unpause tùy theo điều kiện.
-				
+				// Từ 7.3 đến 7.14: Thực hiện pause hoặc unpause tùy theo điều kiện.
+
 				if (b.getGameState() == GameState.WIN || b.getGameState() == GameState.LOSE) {
 					return;
 				}
-				//7.3 đến 7.8: Thực hiện Pause game khi trạng thái game đang là running.
-				//7.3: Gọi Board, lấy trạng thái của game để xác định game có đang là running không.
+				// 7.3 đến 7.8: Thực hiện Pause game khi trạng thái game đang là running.
+				// 7.3: Gọi Board, lấy trạng thái của game để xác định game có đang là running
+				// không.
 				if (b.getGameState() == GameState.RUNNING) {
-					//7.5: Khi 7.3 trả ra kết quả 7.4 là running, gọi Board đặt trạng thái game sang Pause.
+					// 7.5: Khi 7.3 trả ra kết quả 7.4 là running, gọi Board đặt trạng thái game
+					// sang Pause.
 					b.setGameState(GameState.PAUSE);
-					//7.6: Gọi View, đặt tên của Pause item thành Unpause.
+					// 7.6: Gọi View, đặt tên của Pause item thành Unpause.
 					bv.getPauseItem().setText("Unpause");
-					//7.7: Gọi View, chuyển trạng thái của màn che màn hình thành true.
+					// 7.7: Gọi View, chuyển trạng thái của màn che màn hình thành true.
 					bv.getOverlay().setVisible(true);
-					//7.8: Dừng bộ đếm thời gian.
+					// 7.8: Dừng bộ đếm thời gian.
 					timer.stop();
-					
-					//7.9 đến 7.14: Thực hiện Unpause game khi trạng thái game đang là pause.
-					// 7.9: Gọi Board, lấy trạng thái của game để xác định game có đang là pause không.
+
+					// 7.9 đến 7.14: Thực hiện Unpause game khi trạng thái game đang là pause.
+					// 7.9: Gọi Board, lấy trạng thái của game để xác định game có đang là pause
+					// không.
 				} else if (b.getGameState() == GameState.PAUSE) {
-					//7.11: Khi 7.9 trả ra kết quả 7.10 là pause, gọi Board đặt trạng thái game sang Pause.
+					// 7.11: Khi 7.9 trả ra kết quả 7.10 là pause, gọi Board đặt trạng thái game
+					// sang Pause.
 					b.setGameState(GameState.RUNNING);
-					//7.12: Gọi View, đặt tên của Pause item thành Pause.
+					// 7.12: Gọi View, đặt tên của Pause item thành Pause.
 					bv.getPauseItem().setText("Pause");
-					//7.13: Gọi View, chuyển trạng thái của màn che màn hình thành false.
+					// 7.13: Gọi View, chuyển trạng thái của màn che màn hình thành false.
 					bv.getOverlay().setVisible(false);
-					//7.14: Nếu bàn chơi chưa được mở ô nào, thì bộ đếm thời gian sẽ ko được phép mở lại, ngược lại thì được.
+					// 7.14: Nếu bàn chơi chưa được mở ô nào, thì bộ đếm thời gian sẽ ko được phép
+					// mở lại, ngược lại thì được.
 					if (!b.isFirstMove()) {
 						timer.start();
 					}
@@ -185,7 +190,7 @@ public class BoardController {
 						if (b.getGameState() != GameState.RUNNING) {
 							return;
 						}
-						
+
 						if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
 							boolean firstMove = b.isFirstMove();
 							// 3.2: Chuyển hướng xử lí sang lớp Board.
@@ -227,8 +232,10 @@ public class BoardController {
 
 		bv.dispose();
 
-		Board newBoard = new Board(b.getDifficulty());
+		Board newBoard = new Board(b.getConfig());
+
 		BoardView newView = new BoardView(newBoard);
+
 		new BoardController(newView, newBoard);
 	}
 
@@ -238,8 +245,10 @@ public class BoardController {
 			timer.stop();
 		}
 		bv.dispose();
-		Board newBoard = new Board(difficulty);
+		Board newBoard = new Board(difficulty.getConfig());
+
 		BoardView newView = new BoardView(newBoard);
+
 		new BoardController(newView, newBoard);
 	}
 
