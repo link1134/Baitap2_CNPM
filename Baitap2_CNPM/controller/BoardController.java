@@ -79,17 +79,17 @@ public class BoardController {
 		bv.getHintBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// [UC_09_GH]: 9.0.1 - 9.0.2 Người chơi nhấn Hint → BoardView gửi sự kiện → Controller nhận.
+				// 9.0.1 Người chơi nhấn nút Hint.
+				// 9.0.2 BoardView gửi sự kiện → Controller nhận.
 				if (b.getGameState() != GameState.RUNNING) {
 					return;
 				}
-				// Gọi logic hint trong model (sẽ tự reveal một ô an toàn nếu có)
+				// 9.0.6 Gọi giveHint (bên trong sẽ reveal ô an toàn)
 				boolean didHint = b.giveHint();
-				// Cập nhật giao diện sau khi hint (có thể đã mở ô, flood fill, hoặc win/lose)
+				// 9.0.7 Cập nhật giao diện sau hint (có thể flood win/lose)
 				bv.refreshBoard();
 				updateBombUI();
 
-				// Nếu hint không thực hiện được gì (hết ô an toàn hoặc firstMove), có thể thông báo nhẹ
 				if (!didHint && b.getGameState() == GameState.RUNNING) {
 					JOptionPane.showMessageDialog(bv, "Không có gợi ý phù hợp lúc này.", "Hint",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -196,10 +196,7 @@ public class BoardController {
 				bv.getCells()[row][col].addMouseListener(new MouseAdapter() {
 					@Override
 					public void mousePressed(MouseEvent e) {
-						// [UC_08_GC - Luồng thay thế]: 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi
-						// đã kết thúc (thắng hoặc thua).
-						// 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực hiện
-						// thay đổi trạng thái của ô.
+						// 8.2.0 / 4.x Tại bước nhấp chuột phải (hoặc trái) nhưng game không RUNNING → chặn.
 						if (b.getGameState() != GameState.RUNNING) {
 							return;
 						} 
@@ -213,26 +210,14 @@ public class BoardController {
 							}
 
 						} else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
-							// [UC_04_DC]: 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên
-							// giao diện bàn chơi.
-							// [UC_04_DC]: 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu
-							// xử lý nút bấm đến bộ điều khiển (BoardController).
-							// [UC_08_GC]: 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có
-							// cờ trên giao diện bàn chơi.
-							// [UC_08_GC]: 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu
-							// xử lý nút bấm đến bộ điều khiển (BoardController).
-
-							// [UC_04_DC]: 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng
-							// bàn chơi (Board).
-							// [UC_08_GC]: 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng
-							// bàn chơi (Board).
+							// 4.0.1 Người chơi nhấp chuột phải vào một ô.
+							// 4.0.2 BoardView tiếp nhận sự kiện chuột và gửi tín hiệu đến Controller.
+							// 8.1.1 / 8.1.2 Tương tự cho trường hợp ô đang có cờ (gỡ cờ).
+							// 4.0.3 / 8.1.3 Controller gọi toggleFlag trên Board.
 							b.toggleFlag(r, c);
 						}
 
-						// [UC_04_DC]: 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ
-						// tại ô vừa nhấp và cập nhật bộ đếm cờ).
-						// [UC_08_GC]: 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị
-						// (xóa hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
+						// 4.0.10 / 8.1.9 Controller yêu cầu BoardView refreshBoard + updateBombUI.
 						bv.refreshBoard();
 						updateBombUI();
 					}

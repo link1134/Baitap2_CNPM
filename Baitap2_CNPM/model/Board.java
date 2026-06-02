@@ -187,48 +187,31 @@ public class Board implements Serializable {
     }
 
     public void toggleFlag(int r, int c) {
-        // [UC_04_DC - Luồng thay thế]: 4.1.0 Tại bước 4.0.4, nếu ô được nhấp chuột phải là ô đã mở.
-        // 4.1.1 Hệ thống bỏ qua sự kiện, không thực hiện bất kỳ hành động nào.
+        // 4.1.0 Tại bước 4.0.4, nếu ô được nhấp chuột phải là ô đã mở → bỏ qua (luồng thay thế).
         if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c].isRevealed()) {
             return;
         }
 
         Cell cell = grid[r][c];
 
-        // [UC_04_DC]: 4.0.4 Hệ thống kiểm tra trạng thái của ô (Cell) tương ứng để xem ô này
-        // đã có cờ hay chưa.
-        // [UC_08_GC]: 8.1.4 Hệ thống kiểm tra thông tin trạng thái của ô (Cell) tương ứng để xem
-        // ô này có cờ hay chưa.
+        // 4.0.4 / 8.1.4 Hệ thống kiểm tra trạng thái ô (Cell) xem đã có cờ hay chưa.
         if (cell.isFlagged()) {
-            // === THỰC HIỆN GỠ CỜ (UC_08_GC) ===
-            // [UC_08_GC]: 8.1.5 Hệ thống (Cell) xác nhận rằng trạng thái hiện tại của nó là đã được
-            // đặt cờ.
-            // [UC_04_DC - Luồng thay thế]: 4.2.0 Tại bước 4.0.4, nếu ô được nhấp chuột phải là ô
-            // đã có sẵn cờ.
-            // 4.2.1 Hệ thống chuyển sang thực hiện Use Case "Gỡ cờ".
-
-            // [UC_08_GC]: 8.1.6 Hệ thống thực hiện hành động gỡ bỏ cờ khỏi ô (Cell) đó.
+            // 8.1.5 Hệ thống xác nhận ô đang có cờ.
+            // 4.2.0 Tại bước 4.0.4 nếu ô đã có cờ → chuyển sang gỡ cờ.
+            // 8.1.6 Hệ thống gỡ bỏ cờ khỏi ô (Cell).
             cell.setFlagged(false);
-            // [UC_08_GC]: 8.1.7 Hệ thống tiến hành giảm số lượng cờ đã sử dụng xuống (tương đương
-            // với việc tăng số lượng cờ còn lại).
+            // 8.1.7 Hệ thống giảm số lượng cờ đã sử dụng (tăng cờ còn lại).
             flagCount--;
         } else {
-            // === THỰC HIỆN ĐẶT CỜ (UC_04_DC) ===
-            // [UC_04_DC]: 4.0.5 Hệ thống xác nhận trạng thái ô là chưa được đặt cờ.
-
-            // [UC_04_DC]: 4.0.6 Hệ thống thực hiện hành động đặt cờ vào ô đó.
+            // 4.0.5 Hệ thống xác nhận ô chưa có cờ.
+            // 4.0.6 Hệ thống đặt cờ vào ô.
             cell.setFlagged(true);
-            // [UC_04_DC]: 4.0.7 Hệ thống tiến hành tăng số lượng cờ đã đặt trên bàn chơi.
+            // 4.0.7 Hệ thống tăng số lượng cờ đã đặt trên bàn chơi.
             flagCount++;
         }
 
-        // [UC_04_DC]: 4.0.8 Hệ thống kiểm tra số lượng cờ còn lại.
-        // (Việc kiểm tra được thực hiện qua phương thức getRemainingMines()).
-
-        // [UC_04_DC]: 4.0.9 Hệ thống hoàn tất quá trình xử lý logic và trả kết quả về cho
-        // bộ điều khiển.
-        // [UC_08_GC]: 8.1.8 Hệ thống hoàn tất quá trình cập nhật trạng thái logic và trả kết quả
-        // về cho bộ điều khiển.
+        // 4.0.8 Hệ thống kiểm tra số cờ còn lại (qua getRemainingMines).
+        // 4.0.9 / 8.1.8 Hệ thống hoàn tất xử lý logic, trả kết quả về Controller.
     }
 
     private void revealAllMines() {
@@ -372,32 +355,30 @@ public class Board implements Serializable {
      * sau đó fallback chọn ô an toàn bất kỳ (ưu tiên ô có số nhỏ).
      */
     public boolean giveHint() {
-        // [UC_09_GH]: 9.0.3 Hệ thống kiểm tra xem ván chơi có đang ở trạng thái cho phép nhận gợi ý không.
+        // 9.0.3 Hệ thống kiểm tra trạng thái cho phép nhận gợi ý (phải RUNNING).
         if (gameState != GameState.RUNNING) {
             return false;
         }
 
-        // [UC_09_GH]: 9.0.4 Tại bước 9.0.3, nếu đây là lần đầu tiên (chưa click lần nào).
-        // Hệ thống không đưa ra gợi ý (vì mìn chưa được đặt, hoặc để người chơi tự bắt đầu).
+        // 9.0.4 Tại bước 9.0.3, nếu firstMove → không đưa gợi ý (mìn chưa đặt).
         if (firstMove) {
             return false;
         }
 
-        // [UC_09_GH]: 9.0.5 Hệ thống tìm vị trí ô gợi ý an toàn.
+        // 9.0.5 Hệ thống tìm vị trí ô gợi ý an toàn.
         int[] hintPos = findSafeHintPosition();
         if (hintPos == null) {
-            // [UC_09_GH - Luồng thay thế]: 9.1.0 Không còn ô nào an toàn để gợi ý (các ô còn lại đều là mìn hoặc đã xử lý).
+            // 9.1.0 Luồng thay thế: không còn ô an toàn để gợi ý.
             return false;
         }
 
         int r = hintPos[0];
         int c = hintPos[1];
 
-        // [UC_09_GH]: 9.0.6 Hệ thống thực hiện mở ô gợi ý bằng cách tái sử dụng logic reveal.
-        // Điều này đảm bảo flood fill, kiểm tra thắng/thua, cập nhật gameState được xử lý nhất quán.
+        // 9.0.6 Hệ thống thực hiện mở ô gợi ý (tái sử dụng reveal để nhất quán flood/win/lose).
         reveal(r, c);
 
-        // [UC_09_GH]: 9.0.7 Sau khi mở ô gợi ý, hệ thống trả kết quả thành công về cho Controller.
+        // 9.0.7 Sau khi mở, trả kết quả thành công về Controller.
         return true;
     }
 
@@ -408,8 +389,7 @@ public class Board implements Serializable {
      * Trong fallback ưu tiên ô có nearbyMines thấp (0 trước) để gợi ý có ích hơn.
      */
     private int[] findSafeHintPosition() {
-        // --- Bước suy luận (Deduction) ---
-        // [UC_09_GH]: 9.0.5.1 Quét các ô đã mở có số mìn lân cận > 0.
+        // 9.0.5.1 Quét các ô đã mở có nearbyMines > 0 để suy luận.
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 Cell cell = grid[r][c];
@@ -418,8 +398,7 @@ public class Board implements Serializable {
                 }
 
                 int flaggedCount = countFlaggedNeighbors(r, c);
-                // [UC_09_GH]: 9.0.5.2 Nếu số cờ xung quanh bằng đúng số mìn lân cận của ô.
-                // → Tất cả các ô lân cận chưa cắm cờ và chưa mở đều AN TOÀN (không thể là mìn).
+                // 9.0.5.2 Nếu số cờ xung quanh == số mìn lân cận → các ô chưa cờ chưa mở là AN TOÀN.
                 if (flaggedCount == cell.getNearbyMines()) {
                     int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
                     int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -429,7 +408,7 @@ public class Board implements Serializable {
                         if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
                         Cell neighbor = grid[nr][nc];
                         if (!neighbor.isRevealed() && !neighbor.isFlagged()) {
-                            // [UC_09_GH]: 9.0.5.3 Tìm thấy ô suy luận được là an toàn → trả về ngay.
+                            // 9.0.5.3 Tìm được ô an toàn qua suy luận → trả về ngay.
                             return new int[]{nr, nc};
                         }
                     }
@@ -437,10 +416,8 @@ public class Board implements Serializable {
             }
         }
 
-        // --- Fallback: chọn ô an toàn bất kỳ (đảm bảo không bao giờ gợi ý mìn) ---
-        // [UC_09_GH]: 9.0.5.4 Nếu không có nước đi suy luận được, chọn ô chưa mở, chưa cắm cờ, không phải mìn.
-        // Ưu tiên ô có số lân cận từ 1-8 trước (gợi ý mang thông tin hữu ích, hạn chế flood fill quá mạnh).
-        // Chỉ dùng ô 0 nếu không còn lựa chọn nào.
+        // 9.0.5.4 Fallback: chọn ô an toàn bất kỳ (không bao giờ gợi ý mìn).
+        // Ưu tiên ô có nearby >=1 (hữu ích hơn) trước, sau đó mới nhận ô 0.
         int bestR = -1, bestC = -1;
         int bestNearby = 9;
         // Pass 1: ô có nearbyMines >=1
@@ -478,7 +455,6 @@ public class Board implements Serializable {
             return new int[]{bestR, bestC};
         }
 
-        // Không còn ô an toàn nào
         return null;
     }
 
