@@ -22,121 +22,136 @@ import javax.swing.UIManager;
 import model.Difficulty;
 
 public class StartMenu extends JFrame {
-    private LoadData data;
-    private JComboBox<Difficulty> difficultyBox;
-    private JButton startButton;
-    private JTextField rowField;
-    private JTextField colField;
-    private JTextField mineField;
+	private LoadData data;
+	private JComboBox<Difficulty> difficultyBox;
+	private JButton startButton;
+	private JTextField rowField;
+	private JTextField colField;
+	private JTextField mineField;
 
-    private JPanel customPanel;
+	private JPanel customPanel;
 
-    public StartMenu() {
-        data = new LoadData();
-        setIconImage(data.getListImage().get("title"));
-        initializeFrame();
-        initializeComponents();
-        setVisible(true);
-    }
+	public StartMenu() {
+		data = new LoadData();
+		setIconImage(data.getListImage().get("title"));
+		initializeFrame();
+		initializeComponents();
+		setVisible(true);
+	}
 
-    private void initializeFrame() {
-        setTitle("Minesweeper");
-        setSize(500, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-    }
+	private void initializeFrame() {
+		setTitle("Minesweeper");
+		setSize(500, 500);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
+	}
 
-    private void initializeComponents() {
+	private void initializeComponents() {
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBackground(new Color(35, 35, 35));
-        JLabel titleLabel = new JLabel("MINESWEEPER");
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(new Color(35, 35, 35));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 80, 20, 80));
-        JLabel difficultyLabel = new JLabel("Select Difficulty");
-        difficultyLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        difficultyLabel.setForeground(Color.WHITE);
-        difficultyLabel.setAlignmentX(CENTER_ALIGNMENT);
-        centerPanel.add(difficultyLabel);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        difficultyBox = new JComboBox<>(Difficulty.values());
-        difficultyBox.setMaximumSize(new Dimension(300, 40));
-        difficultyBox.setFont(new Font("Arial", Font.PLAIN, 16));
-        centerPanel.add(difficultyBox);
-        
-        customPanel = new JPanel(new GridLayout(3,2,10,10));
-        customPanel.setAlignmentX(CENTER_ALIGNMENT);
-        customPanel.setBackground(new Color(35,35,35));
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.setBackground(new Color(35, 35, 35));
+		JLabel titleLabel = new JLabel("MINESWEEPER");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 0, 20, 0));
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		centerPanel.setBackground(new Color(35, 35, 35));
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 80, 20, 80));
+		JLabel difficultyLabel = new JLabel("Select Difficulty");
+		difficultyLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		difficultyLabel.setForeground(Color.WHITE);
+		difficultyLabel.setAlignmentX(CENTER_ALIGNMENT);
+		centerPanel.add(difficultyLabel);
+		centerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+		difficultyBox = new JComboBox<>(Difficulty.values());
+		difficultyBox.setMaximumSize(new Dimension(300, 40));
+		difficultyBox.setFont(new Font("Arial", Font.PLAIN, 16));
+		centerPanel.add(difficultyBox);
+		customPanel = new JPanel();
+		customPanel.setLayout(new BoxLayout(customPanel, BoxLayout.Y_AXIS));
+		customPanel.setBackground(new Color(35, 35, 35));
+		customPanel.setAlignmentX(CENTER_ALIGNMENT);
 
-        customPanel.add(new JLabel("Rows"));
-        rowField = new JTextField("9");
-        customPanel.add(rowField);
+		customPanel.add(createInputRow("Rows", rowField = new JTextField("9")));
+		customPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 
-        customPanel.add(new JLabel("Columns"));
-        colField = new JTextField("9");
-        customPanel.add(colField);
+		customPanel.add(createInputRow("Columns", colField = new JTextField("9")));
+		customPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 
-        customPanel.add(new JLabel("Mines"));
-        mineField = new JTextField("10");
-        customPanel.add(mineField);
+		customPanel.add(createInputRow("Mines", mineField = new JTextField("10")));
 
-        customPanel.setVisible(false);
-        for(Component c : customPanel.getComponents()) {
-            if(c instanceof JLabel label) {
-                label.setForeground(Color.WHITE);
-            }
-        }
-        centerPanel.add(customPanel);
-        
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        startButton = new JButton("START GAME");
-        startButton.setFocusPainted(false);
-        startButton.setFont(new Font("Arial", Font.BOLD, 18));
-        startButton.setBackground(new Color(70, 70, 70));
-        startButton.setForeground(Color.WHITE);
-        startButton.setAlignmentX(CENTER_ALIGNMENT);
-        startButton.setMaximumSize(new Dimension(300, 50));
-        centerPanel.add(startButton);
-        JLabel footerLabel = new JLabel("Java Swing Minesweeper");
-        footerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        footerLabel.setForeground(new Color(170, 170, 170));
-        footerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        mainPanel.add(titleLabel, BorderLayout.NORTH);
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-        mainPanel.add(footerLabel, BorderLayout.SOUTH);
-        add(mainPanel);
-        
-    }
+		customPanel.setVisible(false);
+		for (Component c : customPanel.getComponents()) {
+			if (c instanceof JLabel label) {
+				label.setForeground(Color.WHITE);
+			}
+		}
+		centerPanel.add(customPanel);
 
-    public Difficulty getSelectedDifficulty() {
-        return (Difficulty) difficultyBox.getSelectedItem();
-    }
+		centerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+		startButton = new JButton("START GAME");
+		startButton.setFocusPainted(false);
+		startButton.setFont(new Font("Arial", Font.BOLD, 18));
+		startButton.setBackground(new Color(70, 70, 70));
+		startButton.setForeground(Color.WHITE);
+		startButton.setAlignmentX(CENTER_ALIGNMENT);
+		startButton.setMaximumSize(new Dimension(300, 50));
+		centerPanel.add(startButton);
+		JLabel footerLabel = new JLabel("Java Swing Minesweeper");
+		footerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		footerLabel.setForeground(new Color(170, 170, 170));
+		footerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+		mainPanel.add(titleLabel, BorderLayout.NORTH);
+		mainPanel.add(centerPanel, BorderLayout.CENTER);
+		mainPanel.add(footerLabel, BorderLayout.SOUTH);
+		add(mainPanel);
 
-    public JComboBox<Difficulty> getDifficultyBox() {
-        return difficultyBox;
-    }
+	}
 
-    public void setDifficultyBox(JComboBox<Difficulty> difficultyBox) {
-        this.difficultyBox = difficultyBox;
-    }
+	private JPanel createInputRow(String text, JTextField field) {
+		JPanel panel = new JPanel();
+		panel.setBackground(new Color(35, 35, 35));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-    public void setStartButton(JButton startButton) {
-        this.startButton = startButton;
-    }
+		JLabel label = new JLabel(text);
+		label.setForeground(Color.WHITE);
+		label.setPreferredSize(new Dimension(80, 30));
+		label.setMaximumSize(new Dimension(80, 30));
 
-    public JButton getStartButton() {
-        return startButton;
-    }
-    
-    public LoadData getData() {
+		field.setMaximumSize(new Dimension(80, 30));
+
+		panel.add(label);
+		panel.add(Box.createHorizontalStrut(10));
+		panel.add(field);
+
+		return panel;
+	}
+
+	public Difficulty getSelectedDifficulty() {
+		return (Difficulty) difficultyBox.getSelectedItem();
+	}
+
+	public JComboBox<Difficulty> getDifficultyBox() {
+		return difficultyBox;
+	}
+
+	public void setDifficultyBox(JComboBox<Difficulty> difficultyBox) {
+		this.difficultyBox = difficultyBox;
+	}
+
+	public void setStartButton(JButton startButton) {
+		this.startButton = startButton;
+	}
+
+	public JButton getStartButton() {
+		return startButton;
+	}
+
+	public LoadData getData() {
 		return data;
 	}
 
@@ -177,6 +192,6 @@ public class StartMenu extends JFrame {
 	}
 
 	public static void main(String[] args) {
-        StartMenu sm = new StartMenu();
-    }
+		StartMenu sm = new StartMenu();
+	}
 }
