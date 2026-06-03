@@ -75,18 +75,23 @@ public class BoardController {
 			}
 		});
 
-		// Xử lý nút Hint (UC_09_GH)
+		// ─── 9. GỢI Ý (UC_09_GH) ─────────────────────────────────────────────
 		bv.getHintBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 9.0.1 Người chơi nhấn nút Hint.
-				// 9.0.2 BoardView gửi sự kiện → Controller nhận.
+				// 9.0.1 Người chơi thực hiện thao tác nhấp vào nút "Gợi ý" (Hint) trên giao diện bàn chơi.
+				// 9.0.2 Hệ thống (BoardView) tiếp nhận sự kiện kích hoạt và gửi yêu cầu lấy gợi ý đến bộ điều khiển (BoardController).
+				// 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ không còn ô an toàn nào khác để gợi ý.
 				if (b.getGameState() != GameState.RUNNING) {
+					// 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự kiện.
+					// 9.2.2 Use case kết thúc.
 					return;
 				}
-				// 9.0.6 Gọi giveHint (bên trong sẽ reveal ô an toàn)
+				// 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi (Board).
 				boolean didHint = b.giveHint();
-				// 9.0.7 Cập nhật giao diện sau hint (có thể flood win/lose)
+				// 9.0.6 Bộ điều khiển tiếp nhận tọa độ ô gợi ý từ hệ thống (thông qua kết quả trả về).
+
+				// 9.0.9 Hệ thống hoàn tất quá trình xử lý và cập nhật lại toàn bộ giao diện bàn chơi để hiển thị trạng thái mới nhất.
 				bv.refreshBoard();
 				updateBombUI();
 
@@ -196,8 +201,9 @@ public class BoardController {
 				bv.getCells()[row][col].addMouseListener(new MouseAdapter() {
 					@Override
 					public void mousePressed(MouseEvent e) {
-						// 8.2.0 / 4.x Tại bước nhấp chuột phải (hoặc trái) nhưng game không RUNNING → chặn.
+						// 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi đã kết thúc (thắng hoặc thua).
 						if (b.getGameState() != GameState.RUNNING) {
+							// 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực hiện thay đổi trạng thái của ô.
 							return;
 						} 
 						if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
@@ -210,14 +216,17 @@ public class BoardController {
 							}
 
 						} else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
-							// 4.0.1 Người chơi nhấp chuột phải vào một ô.
-							// 4.0.2 BoardView tiếp nhận sự kiện chuột và gửi tín hiệu đến Controller.
-							// 8.1.1 / 8.1.2 Tương tự cho trường hợp ô đang có cờ (gỡ cờ).
-							// 4.0.3 / 8.1.3 Controller gọi toggleFlag trên Board.
+							// 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên giao diện bàn chơi.
+							// 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có cờ trên giao diện bàn chơi.
+							// 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
+							// 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
+							// 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
+							// 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
 							b.toggleFlag(r, c);
 						}
 
-						// 4.0.10 / 8.1.9 Controller yêu cầu BoardView refreshBoard + updateBombUI.
+						// 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại ô vừa nhấp và cập nhật bộ đếm cờ).
+						// 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị (xóa hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
 						bv.refreshBoard();
 						updateBombUI();
 					}
