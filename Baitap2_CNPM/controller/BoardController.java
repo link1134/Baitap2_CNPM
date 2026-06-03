@@ -1,20 +1,16 @@
 package controller;
 
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.Timer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import model.Board;
-import model.Cell;
 import model.Difficulty;
 import model.GameState;
 import view.BoardView;
@@ -34,37 +30,47 @@ public class BoardController {
 
 	private void init() {
 		bv.getPauseItem().addActionListener(new ActionListener() {
-
+			// 7.1 và 7.2 Xử lí sự kiện người chơi nhấn nút Pause.
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Từ 7.3 đến 7.14: Thực hiện pause hoặc unpause tùy theo điều kiện.
 
 				if (b.getGameState() == GameState.WIN || b.getGameState() == GameState.LOSE) {
 					return;
 				}
-
+				// 7.3 đến 7.8: Thực hiện Pause game khi trạng thái game đang là running.
+				// 7.3: Gọi Board, lấy trạng thái của game để xác định game có đang là running
+				// không.
 				if (b.getGameState() == GameState.RUNNING) {
-
+					// 7.5: Khi 7.3 trả ra kết quả 7.4 là running, gọi Board đặt trạng thái game
+					// sang Pause.
 					b.setGameState(GameState.PAUSE);
-
+					// 7.6: Gọi View, đặt tên của Pause item thành Unpause.
 					bv.getPauseItem().setText("Unpause");
-
+					// 7.7: Gọi View, chuyển trạng thái của màn che màn hình thành true.
 					bv.getOverlay().setVisible(true);
-
+					// 7.8: Dừng bộ đếm thời gian.
 					timer.stop();
-					if (bv.getHintBtn() != null) bv.getHintBtn().setEnabled(false);
-
+					if (bv.getHintBtn() != null)
+						bv.getHintBtn().setEnabled(false);
+					// 7.9 đến 7.14: Thực hiện Unpause game khi trạng thái game đang là pause.
+					// 7.9: Gọi Board, lấy trạng thái của game để xác định game có đang là pause
+					// không.
 				} else if (b.getGameState() == GameState.PAUSE) {
-
+					// 7.11: Khi 7.9 trả ra kết quả 7.10 là pause, gọi Board đặt trạng thái game
+					// sang Pause.
 					b.setGameState(GameState.RUNNING);
-
+					// 7.12: Gọi View, đặt tên của Pause item thành Pause.
 					bv.getPauseItem().setText("Pause");
-
+					// 7.13: Gọi View, chuyển trạng thái của màn che màn hình thành false.
 					bv.getOverlay().setVisible(false);
-
+					// 7.14: Nếu bàn chơi chưa được mở ô nào, thì bộ đếm thời gian sẽ ko được phép
+					// mở lại, ngược lại thì được.
 					if (!b.isFirstMove()) {
 						timer.start();
 					}
-					if (bv.getHintBtn() != null) bv.getHintBtn().setEnabled(true);
+					if (bv.getHintBtn() != null)
+						bv.getHintBtn().setEnabled(true);
 				}
 			}
 		});
@@ -79,19 +85,26 @@ public class BoardController {
 		bv.getHintBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 9.0.1 Người chơi thực hiện thao tác nhấp vào nút "Gợi ý" (Hint) trên giao diện bàn chơi.
-				// 9.0.2 Hệ thống (BoardView) tiếp nhận sự kiện kích hoạt và gửi yêu cầu lấy gợi ý đến bộ điều khiển (BoardController).
-				// 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ không còn ô an toàn nào khác để gợi ý.
+				// 9.0.1 Người chơi thực hiện thao tác nhấp vào nút "Gợi ý" (Hint) trên giao
+				// diện bàn chơi.
+				// 9.0.2 Hệ thống (BoardView) tiếp nhận sự kiện kích hoạt và gửi yêu cầu lấy gợi
+				// ý đến bộ điều khiển (BoardController).
+				// 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ
+				// không còn ô an toàn nào khác để gợi ý.
 				if (b.getGameState() != GameState.RUNNING) {
-					// 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự kiện.
+					// 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự
+					// kiện.
 					// 9.2.2 Use case kết thúc.
 					return;
 				}
-				// 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi (Board).
+				// 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi
+				// (Board).
 				boolean didHint = b.giveHint();
-				// 9.0.6 Bộ điều khiển tiếp nhận tọa độ ô gợi ý từ hệ thống (thông qua kết quả trả về).
+				// 9.0.6 Bộ điều khiển tiếp nhận tọa độ ô gợi ý từ hệ thống (thông qua kết quả
+				// trả về).
 
-				// 9.0.9 Hệ thống hoàn tất quá trình xử lý và cập nhật lại toàn bộ giao diện bàn chơi để hiển thị trạng thái mới nhất.
+				// 9.0.9 Hệ thống hoàn tất quá trình xử lý và cập nhật lại toàn bộ giao diện bàn
+				// chơi để hiển thị trạng thái mới nhất.
 				bv.refreshBoard();
 				updateBombUI();
 
@@ -105,11 +118,15 @@ public class BoardController {
 		bv.getExportItem().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// 3. getGameState() lấy trạng thái game
 				GameState oldState = b.getGameState();
 				if (oldState == GameState.RUNNING) {
+					// 4. setGameState(PAUSE) tạm dừng game nếu đang chạy
 					b.setGameState(GameState.PAUSE);
 				}
+				// 5. exportData() → Serialize + Base64
 				String data = b.exportData();
+				// 6. Khôi phục trạng thái game cũ
 				b.setGameState(oldState);
 				JTextArea area = new JTextArea(data);
 				area.setLineWrap(true);
@@ -127,26 +144,37 @@ public class BoardController {
 				if (data == null || data.trim().isBlank()) {
 					return;
 				}
+				// 4. importData(chuỗi save)
 				Board importedBoard = Board.importData(data.trim());
 				if (importedBoard == null) {
+					// 5a. Hiển thị thông báo lỗi
 					JOptionPane.showMessageDialog(bv, "Dữ liệu save không hợp lệ!", "Import thất bại",
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				// 5b. Dừng timer hiện tại
 				if (timer != null) {
 					timer.stop();
 				}
+				// 6. dispose() BoardView cũ
 				bv.dispose();
+				// 7. Tạo BoardView mới từ dữ liệu import
 				BoardView newView = new BoardView(importedBoard);
+				// 8. Tạo BoardController mới
 				BoardController controller = new BoardController(newView, importedBoard);
+				// Xử lý giao diện theo trạng thái game được lưu
 				if (importedBoard.getGameState() == GameState.PAUSE) {
 					newView.getPauseItem().setText("Unpause");
 					newView.getOverlay().setVisible(true);
-					if (newView.getHintBtn() != null) newView.getHintBtn().setEnabled(false);
+					if (newView.getHintBtn() != null)
+						newView.getHintBtn().setEnabled(false);
 				} else {
-					if (newView.getHintBtn() != null) newView.getHintBtn().setEnabled(true);
+					if (newView.getHintBtn() != null)
+						newView.getHintBtn().setEnabled(true);
 				}
+				// 9. Cập nhật UI
 				controller.updateView();
+				// Cập nhật thời gian và số mìn
 				String text = String.format("%03d", importedBoard.getElapsedTime());
 				newView.getLbtime().setNumber(text);
 				int remain = importedBoard.getRemainingMines();
@@ -200,15 +228,19 @@ public class BoardController {
 				int c = col;
 				bv.getCells()[row][col].addMouseListener(new MouseAdapter() {
 					@Override
+					// 3.1: Xử lí người dùng nhấn vào ô
+					// 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi đã kết thúc
+					// (thắng hoặc thua).
 					public void mousePressed(MouseEvent e) {
-						// 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi đã kết thúc (thắng hoặc thua).
 						if (b.getGameState() != GameState.RUNNING) {
-							// 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực hiện thay đổi trạng thái của ô.
+							// 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực
+							// hiện thay đổi trạng thái của ô.
 							return;
-						} 
+						}
+
 						if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
 							boolean firstMove = b.isFirstMove();
-
+							// 3.2: Chuyển hướng xử lí sang lớp Board.
 							b.reveal(r, c);
 
 							if (firstMove) {
@@ -216,18 +248,27 @@ public class BoardController {
 							}
 
 						} else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
-							// 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên giao diện bàn chơi.
-							// 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có cờ trên giao diện bàn chơi.
-							// 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
-							// 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
-							// 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
-							// 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
+							// 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên giao diện
+							// bàn chơi.
+							// 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có cờ trên
+							// giao diện bàn chơi.
+							// 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút
+							// bấm đến bộ điều khiển (BoardController).
+							// 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút
+							// bấm đến bộ điều khiển (BoardController).
+							// 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi
+							// (Board).
+							// 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi
+							// (Board).
 							b.toggleFlag(r, c);
 						}
-
-						// 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại ô vừa nhấp và cập nhật bộ đếm cờ).
-						// 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị (xóa hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
+						// 3.11: Phương thức gọi view cập nhật giao diện
+						// 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại
+						// ô vừa nhấp và cập nhật bộ đếm cờ).
+						// 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị (xóa
+						// hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
 						bv.refreshBoard();
+						// 3.12: Cập nhật số mìn còn lại.
 						updateBombUI();
 					}
 				});
@@ -254,8 +295,10 @@ public class BoardController {
 
 		bv.dispose();
 
-		Board newBoard = new Board(b.getDifficulty());
+		Board newBoard = new Board(b.getConfig());
+
 		BoardView newView = new BoardView(newBoard);
+
 		new BoardController(newView, newBoard);
 	}
 
@@ -265,8 +308,10 @@ public class BoardController {
 			timer.stop();
 		}
 		bv.dispose();
-		Board newBoard = new Board(difficulty);
+		Board newBoard = new Board(difficulty.getConfig());
+
 		BoardView newView = new BoardView(newBoard);
+
 		new BoardController(newView, newBoard);
 	}
 

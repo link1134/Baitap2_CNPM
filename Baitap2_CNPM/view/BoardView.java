@@ -1,7 +1,6 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -11,7 +10,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -24,377 +22,376 @@ import model.Cell;
 import model.GameState;
 
 public class BoardView extends JFrame {
-    private JPanel p1, p2, p11, p12, p13;
-    private PauseOverlay overlay;
-    private LoadData data;
-    private Board board;
-    private int cellSize;
-    private JButton[][] cells;
-    private JButton smileBtn;
-    private JButton hintBtn;
-    private LabelNumber lbtime, lbbomb;
-    private JMenuItem easy, medium, hard, exit, importItem, exportItem, pauseItem;
+	private JPanel p1, p2, p11, p12, p13;
+	private PauseOverlay overlay;
+	private LoadData data;
+	private Board board;
+	private int cellSize;
+	private JButton[][] cells;
+	private JButton smileBtn;
+	private JButton hintBtn;
+	private LabelNumber lbtime, lbbomb;
+	private JMenuItem easy, medium, hard, exit, importItem, exportItem, pauseItem;
 
-    public BoardView(Board board) {
-        this.board = board;
-        data = new LoadData();
-        setIconImage(data.getListImage().get("title"));
-        initializeMenu();
-        initializeFrame();
-        initializeBoard();
-        setVisible(true);
-    }
+	public BoardView(Board board) {
+		this.board = board;
+		data = new LoadData();
+		setIconImage(data.getListImage().get("title"));
+		initializeMenu();
+		initializeFrame();
+		initializeBoard();
+		setVisible(true);
+	}
 
-    private void initializeMenu() {
-        // TODO Auto-generated method stub
-        JMenuBar menuBar = new JMenuBar();
+	private void initializeMenu() {
+		// TODO Auto-generated method stub
+		JMenuBar menuBar = new JMenuBar();
 
-        JMenu gameMenu = new JMenu("Game");
-        JMenu gameMenu2 = new JMenu("New Game");
-        easy = new JMenuItem("Easy");
-        medium = new JMenuItem("Medium");
-        hard = new JMenuItem("Hard");
-        exit = new JMenuItem("Exit");
-        importItem = new JMenuItem("Import");
-        exportItem = new JMenuItem("Export");
-        pauseItem = new JMenuItem("Pause");
-        gameMenu2.add(easy);
-        gameMenu2.add(medium);
-        gameMenu2.add(hard);
-        gameMenu.add(pauseItem);
-        gameMenu.add(importItem);
-        gameMenu.add(exportItem);
-        gameMenu.addSeparator();
-        gameMenu.add(exit);
+		JMenu gameMenu = new JMenu("Game");
+		JMenu gameMenu2 = new JMenu("New Game");
+		easy = new JMenuItem("Easy");
+		medium = new JMenuItem("Medium");
+		hard = new JMenuItem("Hard");
+		exit = new JMenuItem("Exit");
+		importItem = new JMenuItem("Import");
+		exportItem = new JMenuItem("Export");
+		pauseItem = new JMenuItem("Pause");
+		gameMenu2.add(easy);
+		gameMenu2.add(medium);
+		gameMenu2.add(hard);
+		gameMenu.add(pauseItem);
+		gameMenu.add(importItem);
+		gameMenu.add(exportItem);
+		gameMenu.addSeparator();
+		gameMenu.add(exit);
 
-        menuBar.add(gameMenu);
-        menuBar.add(gameMenu2);
+		menuBar.add(gameMenu);
+		menuBar.add(gameMenu2);
 
-        setJMenuBar(menuBar);
-    }
+		setJMenuBar(menuBar);
+	}
 
-    private void initializeFrame() {
-        setTitle("Minesweeper");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
-    }
+	private void initializeFrame() {
+		setTitle("Minesweeper");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
+	}
 
-    private void initializeBoard() {
-        setLayout(new BorderLayout(20, 20));
+	private void initializeBoard() {
+		setLayout(new BorderLayout(20, 20));
 
-        add(p1 = new JPanel(new BorderLayout()), BorderLayout.NORTH);
+		add(p1 = new JPanel(new BorderLayout()), BorderLayout.NORTH);
 
-        p1.setBorder(BorderFactory.createLoweredBevelBorder());
+		p1.setBorder(BorderFactory.createLoweredBevelBorder());
 
-        p1.add(p11 = new JPanel(), BorderLayout.WEST);
-        p1.add(p12 = new JPanel(), BorderLayout.EAST);
-        p1.add(p13 = new JPanel(), BorderLayout.CENTER);
+		p1.add(p11 = new JPanel(), BorderLayout.WEST);
+		p1.add(p12 = new JPanel(), BorderLayout.EAST);
+		p1.add(p13 = new JPanel(), BorderLayout.CENTER);
 
-        p11.add(lbbomb = new LabelNumber(this, "000"));
-        p12.add(lbtime = new LabelNumber(this, "000"));
+		p11.add(lbbomb = new LabelNumber(this, "000"));
+		p12.add(lbtime = new LabelNumber(this, "000"));
 
-        Image smileImg = data.getListImage().get("smile").getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		Image smileImg = data.getListImage().get("smile").getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 
-        smileBtn = new JButton(new ImageIcon(smileImg));
+		smileBtn = new JButton(new ImageIcon(smileImg));
 
-        smileBtn.setBorderPainted(false);
-        smileBtn.setFocusPainted(false);
-        smileBtn.setContentAreaFilled(false);
-        smileBtn.setMargin(new Insets(0, 0, 0, 0));
+		smileBtn.setBorderPainted(false);
+		smileBtn.setFocusPainted(false);
+		smileBtn.setContentAreaFilled(false);
+		smileBtn.setMargin(new Insets(0, 0, 0, 0));
 
-        p13.add(smileBtn);
-
-        // Nút Hint - đặt cạnh nút smile để người chơi dễ truy cập
+		p13.add(smileBtn);
+		
+		// Nút Hint - đặt cạnh nút smile để người chơi dễ truy cập
         hintBtn = new JButton("Hint");
         hintBtn.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
         hintBtn.setMargin(new java.awt.Insets(2, 6, 2, 6));
         hintBtn.setFocusPainted(false);
         hintBtn.setToolTipText("Gợi ý một ô an toàn (miễn phí)");
         p13.add(hintBtn);
+		
+		int rows = board.getRows();
+		int cols = board.getCols();
+		
+		cells = new JButton[rows][cols];
 
-        int rows = board.getRows();
-        int cols = board.getCols();
+		JPanel boardPanel = new JPanel();
+		boardPanel.setLayout(new GridLayout(rows, cols));
 
-        cells = new JButton[rows][cols];
+		if (cols >= 30) {
+			cellSize = 25;
+		} else if (cols >= 16) {
+			cellSize = 32;
+		} else {
+			cellSize = 40;
+		}
 
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(rows, cols));
+		for (int row = 0; row < rows; row++) {
 
-        if (cols >= 30) {
-            cellSize = 25;
-        } else if (cols >= 16) {
-            cellSize = 32;
-        } else {
-            cellSize = 40;
-        }
+			for (int col = 0; col < cols; col++) {
 
-        for (int row = 0; row < rows; row++) {
+				JButton button = new JButton();
 
-            for (int col = 0; col < cols; col++) {
+				button.setPreferredSize(new Dimension(cellSize, cellSize));
 
-                JButton button = new JButton();
+				cells[row][col] = button;
 
-                button.setPreferredSize(new Dimension(cellSize, cellSize));
+				Image scaled = data.getListImage().get("noUse").getScaledInstance(cellSize, cellSize,
+						Image.SCALE_SMOOTH);
 
-                cells[row][col] = button;
+				button.setBorderPainted(false);
+				button.setFocusPainted(false);
+				button.setContentAreaFilled(false);
 
-                Image scaled = data.getListImage().get("noUse").getScaledInstance(cellSize, cellSize,
-                        Image.SCALE_SMOOTH);
+				button.setMargin(new Insets(0, 0, 0, 0));
 
-                button.setBorderPainted(false);
-                button.setFocusPainted(false);
-                button.setContentAreaFilled(false);
+				button.setIcon(new ImageIcon(scaled));
 
-                button.setMargin(new Insets(0, 0, 0, 0));
+				boardPanel.add(button);
+			}
+		}
 
-                button.setIcon(new ImageIcon(scaled));
+		boardPanel.setBorder(BorderFactory.createLoweredBevelBorder());
 
-                boardPanel.add(button);
-            }
-        }
+		// ===== OVERLAY =====
 
-        boardPanel.setBorder(BorderFactory.createLoweredBevelBorder());
+		overlay = new PauseOverlay();
+		overlay.setVisible(false);
 
-        // ===== OVERLAY =====
+		JLayeredPane layeredPane = new JLayeredPane();
 
-        overlay = new PauseOverlay();
-        overlay.setVisible(false);
+		Dimension size = boardPanel.getPreferredSize();
 
-        JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setPreferredSize(size);
 
-        Dimension size = boardPanel.getPreferredSize();
+		boardPanel.setBounds(0, 0, size.width, size.height);
+		overlay.setBounds(0, 0, size.width, size.height);
 
-        layeredPane.setPreferredSize(size);
+		layeredPane.add(boardPanel, Integer.valueOf(0));
+		layeredPane.add(overlay, Integer.valueOf(1));
 
-        boardPanel.setBounds(0, 0, size.width, size.height);
-        overlay.setBounds(0, 0, size.width, size.height);
+		add(layeredPane, BorderLayout.CENTER);
 
-        layeredPane.add(boardPanel, Integer.valueOf(0));
-        layeredPane.add(overlay, Integer.valueOf(1));
+		pack();
 
-        add(layeredPane, BorderLayout.CENTER);
+		setLocationRelativeTo(null);
+	}
 
-        pack();
+	public void refreshBoard() {
+		for (int row = 0; row < board.getRows(); row++) {
+			for (int col = 0; col < board.getCols(); col++) {
+				JButton btn = cells[row][col];
+				Cell cell = board.getGrid()[row][col];
+				if (cell.isFlagged() && !cell.isMine() && board.getGameState() == GameState.LOSE) {
+					btn.setIcon(getScaledIcon("boomX"));
 
-        setLocationRelativeTo(null);
-    }
+				} else if (!cell.isRevealed()) {
+					if (cell.isFlagged()) {
+						btn.setIcon(getScaledIcon("co"));
+					} else {
+						btn.setIcon(getScaledIcon("noUse"));
+					}
+				} else {
+					if (cell.isMine()) {
+						if (cell.isExploded()) {
+							btn.setIcon(getScaledIcon("boomRed"));
+						} else {
+							btn.setIcon(getScaledIcon("boom"));
+						}
+					} else {
+						String key = "b" + cell.getNearbyMines();
+						btn.setIcon(getScaledIcon(key));
+					}
+				}
+				btn.repaint();
+			}
+		}
+		if (board.getGameState() == GameState.WIN) {
+			smileBtn.setIcon(getSmileIcon("smileWin"));
+			JOptionPane.showMessageDialog(this, "Bạn đã thắng !");
+			pauseItem.setEnabled(false);
+			if (hintBtn != null) hintBtn.setEnabled(false);
 
-    public void refreshBoard() {
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int col = 0; col < board.getCols(); col++) {
-                JButton btn = cells[row][col];
-                Cell cell = board.getGrid()[row][col];
-                if (cell.isFlagged() && !cell.isMine() && board.getGameState() != GameState.RUNNING) {
-                    btn.setIcon(getScaledIcon("boomX"));
-
-                } else if (!cell.isRevealed()) {
-                    if (cell.isFlagged()) {
-                        btn.setIcon(getScaledIcon("co"));
-                    } else {
-                        btn.setIcon(getScaledIcon("noUse"));
-                    }
-                } else {
-                    if (cell.isMine()) {
-                        if (cell.isExploded()) {
-                            btn.setIcon(getScaledIcon("boomRed"));
-                        } else {
-                            btn.setIcon(getScaledIcon("boom"));
-                        }
-                    } else {
-                        String key = "b" + cell.getNearbyMines();
-                        btn.setIcon(getScaledIcon(key));
-                    }
-                }
-                btn.repaint();
-            }
-        }
-        if (board.getGameState() == GameState.WIN) {
-            smileBtn.setIcon(getSmileIcon("smileWin"));
-            JOptionPane.showMessageDialog(this, "Bạn đã thắng !");
-            pauseItem.setEnabled(false);
-            if (hintBtn != null) hintBtn.setEnabled(false);
-
-        } else if (board.getGameState() == GameState.LOSE) {
-            smileBtn.setIcon(getSmileIcon("smileLose"));
-            JOptionPane.showMessageDialog(this, "Bạn đã thua !");
-            pauseItem.setEnabled(false);
-            if (hintBtn != null) hintBtn.setEnabled(false);
+		} else if (board.getGameState() == GameState.LOSE) {
+			smileBtn.setIcon(getSmileIcon("smileLose"));
+			JOptionPane.showMessageDialog(this, "Bạn đã thua !");
+			pauseItem.setEnabled(false);
+			if (hintBtn != null) hintBtn.setEnabled(false);
         } else if (board.getGameState() == GameState.RUNNING) {
             if (hintBtn != null) hintBtn.setEnabled(true);
         } else {
             // PAUSE or other → disable hint
             if (hintBtn != null) hintBtn.setEnabled(false);
-        }
-    }
+		}
+	}
 
-    private ImageIcon getScaledIcon(String key) {
-        Image img = data.getListImage().get(key).getScaledInstance(cellSize, cellSize,
-                Image.SCALE_SMOOTH);
+	private ImageIcon getScaledIcon(String key) {
+		Image img = data.getListImage().get(key).getScaledInstance(cellSize, cellSize, Image.SCALE_SMOOTH);
 
-        return new ImageIcon(img);
-    }
+		return new ImageIcon(img);
+	}
 
-    private ImageIcon getSmileIcon(String key) {
-        Image img = data.getListImage().get(key).getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
+	private ImageIcon getSmileIcon(String key) {
+		Image img = data.getListImage().get(key).getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		return new ImageIcon(img);
+	}
 
-    public JMenuItem getEasy() {
-        return easy;
-    }
+	public JMenuItem getEasy() {
+		return easy;
+	}
 
-    public void setEasy(JMenuItem easy) {
-        this.easy = easy;
-    }
+	public void setEasy(JMenuItem easy) {
+		this.easy = easy;
+	}
 
-    public JMenuItem getMedium() {
-        return medium;
-    }
+	public JMenuItem getMedium() {
+		return medium;
+	}
 
-    public void setMedium(JMenuItem medium) {
-        this.medium = medium;
-    }
+	public void setMedium(JMenuItem medium) {
+		this.medium = medium;
+	}
 
-    public JMenuItem getHard() {
-        return hard;
-    }
+	public JMenuItem getHard() {
+		return hard;
+	}
 
-    public void setHard(JMenuItem hard) {
-        this.hard = hard;
-    }
+	public void setHard(JMenuItem hard) {
+		this.hard = hard;
+	}
 
-    public JMenuItem getExit() {
-        return exit;
-    }
+	public JMenuItem getExit() {
+		return exit;
+	}
 
-    public void setExit(JMenuItem exit) {
-        this.exit = exit;
-    }
+	public void setExit(JMenuItem exit) {
+		this.exit = exit;
+	}
 
-    public JMenuItem getImportItem() {
-        return importItem;
-    }
+	public JMenuItem getImportItem() {
+		return importItem;
+	}
 
-    public void setImportItem(JMenuItem importItem) {
-        this.importItem = importItem;
-    }
+	public void setImportItem(JMenuItem importItem) {
+		this.importItem = importItem;
+	}
 
-    public JMenuItem getExportItem() {
-        return exportItem;
-    }
+	public JMenuItem getExportItem() {
+		return exportItem;
+	}
 
-    public void setExportItem(JMenuItem exportItem) {
-        this.exportItem = exportItem;
-    }
+	public void setExportItem(JMenuItem exportItem) {
+		this.exportItem = exportItem;
+	}
 
-    public JPanel getP1() {
-        return p1;
-    }
+	public JPanel getP1() {
+		return p1;
+	}
 
-    public void setP1(JPanel p1) {
-        this.p1 = p1;
-    }
+	public void setP1(JPanel p1) {
+		this.p1 = p1;
+	}
 
-    public JPanel getP2() {
-        return p2;
-    }
+	public JPanel getP2() {
+		return p2;
+	}
 
-    public void setP2(JPanel p2) {
-        this.p2 = p2;
-    }
+	public void setP2(JPanel p2) {
+		this.p2 = p2;
+	}
 
-    public JPanel getP11() {
-        return p11;
-    }
+	public JPanel getP11() {
+		return p11;
+	}
 
-    public void setP11(JPanel p11) {
-        this.p11 = p11;
-    }
+	public void setP11(JPanel p11) {
+		this.p11 = p11;
+	}
 
-    public JPanel getP12() {
-        return p12;
-    }
+	public JPanel getP12() {
+		return p12;
+	}
 
-    public void setP12(JPanel p12) {
-        this.p12 = p12;
-    }
+	public void setP12(JPanel p12) {
+		this.p12 = p12;
+	}
 
-    public JPanel getP13() {
-        return p13;
-    }
+	public JPanel getP13() {
+		return p13;
+	}
 
-    public void setP13(JPanel p13) {
-        this.p13 = p13;
-    }
+	public void setP13(JPanel p13) {
+		this.p13 = p13;
+	}
 
-    public LoadData getData() {
-        return data;
-    }
+	public LoadData getData() {
+		return data;
+	}
 
-    public void setData(LoadData data) {
-        this.data = data;
-    }
+	public void setData(LoadData data) {
+		this.data = data;
+	}
 
-    public Board getBoard() {
-        return board;
-    }
+	public Board getBoard() {
+		return board;
+	}
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
+	public void setBoard(Board board) {
+		this.board = board;
+	}
 
-    public JButton getSmileBtn() {
-        return smileBtn;
-    }
+	public JButton getSmileBtn() {
+		return smileBtn;
+	}
 
-    public void setSmileBtn(JButton smileBtn) {
-        this.smileBtn = smileBtn;
-    }
+	public void setSmileBtn(JButton smileBtn) {
+		this.smileBtn = smileBtn;
+	}
 
-    public LabelNumber getLbtime() {
-        return lbtime;
-    }
+	public LabelNumber getLbtime() {
+		return lbtime;
+	}
 
-    public void setLbtime(LabelNumber lbtime) {
-        this.lbtime = lbtime;
-    }
+	public void setLbtime(LabelNumber lbtime) {
+		this.lbtime = lbtime;
+	}
 
-    public LabelNumber getLbbomb() {
-        return lbbomb;
-    }
+	public LabelNumber getLbbomb() {
+		return lbbomb;
+	}
 
-    public void setLbbomb(LabelNumber lbbomb) {
-        this.lbbomb = lbbomb;
-    }
+	public void setLbbomb(LabelNumber lbbomb) {
+		this.lbbomb = lbbomb;
+	}
 
-    public void setCells(JButton[][] cells) {
-        this.cells = cells;
-    }
+	public void setCells(JButton[][] cells) {
+		this.cells = cells;
+	}
 
-    public int getCellSize() {
-        return cellSize;
-    }
+	public int getCellSize() {
+		return cellSize;
+	}
 
-    public void setCellSize(int cellSize) {
-        this.cellSize = cellSize;
-    }
+	public void setCellSize(int cellSize) {
+		this.cellSize = cellSize;
+	}
 
-    public JButton[][] getCells() {
-        return cells;
-    }
+	public JButton[][] getCells() {
+		return cells;
+	}
 
-    public JMenuItem getPauseItem() {
-        return pauseItem;
-    }
+	public JMenuItem getPauseItem() {
+		return pauseItem;
+	}
 
-    public void setPauseItem(JMenuItem pauseItem) {
-        this.pauseItem = pauseItem;
-    }
+	public void setPauseItem(JMenuItem pauseItem) {
+		this.pauseItem = pauseItem;
+	}
 
-    public PauseOverlay getOverlay() {
-        return overlay;
-    }
+	public PauseOverlay getOverlay() {
+		return overlay;
+	}
 
     public JButton getHintBtn() {
         return hintBtn;
