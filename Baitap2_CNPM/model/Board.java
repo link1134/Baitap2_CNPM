@@ -42,17 +42,21 @@ public class Board implements Serializable {
 		}
 	}
 
-	public String exportData() {
+public String exportData() {
 		try {
+			// 4.1.1. Tạo stream output
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// 4.1.2. Tạo ObjectOutputStream
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 
-			// Serialize toàn bộ object Board
+			// 4.1.3. Serialize toàn bộ bảng
 			oos.writeObject(this);
 			oos.close();
-
+			
+			// 4.1.4. Encode Base64
 			String data = Base64.getEncoder().encodeToString(baos.toByteArray());
-			// Thêm version để tương thích sau này
+			
+			// 4.1.5. Thêm version
 			return SAVE_VERSION + "," + data;
 
 		} catch (Exception e) {
@@ -60,12 +64,15 @@ public class Board implements Serializable {
 			return null;
 		}
 	}
-
+	
+	// 5.0.6. Board xử lý  dữ liệu
 	public static Board importData(String input) {
+		// 5.2.1 Người chơi nhấn Cancel hoặc nhập chuỗi trống
 		if (input == null || input.trim().isEmpty()) {
 			return null;
 		}
 		try {
+			
 			String data = input.trim();
 			int version = 1;
 			// Hỗ trợ version
@@ -78,11 +85,12 @@ public class Board implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes));
 			Board board = (Board) ois.readObject();
 			ois.close();
-			// Fix trạng thái nếu bị null sau khi deserialize
+			// 5.3.1. Fix trạng thái nếu bị null sau khi deserialize
 			if (board.getGameState() == null) {
 				board.setGameState(GameState.RUNNING);
 			}
 			return board;
+			// Bắt ngoại lệ
 		} catch (Exception e) {
 			System.err.println("Lỗi khi import save: " + e.getMessage());
 			e.printStackTrace();
