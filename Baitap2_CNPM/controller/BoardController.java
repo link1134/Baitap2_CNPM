@@ -7,8 +7,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.Timer;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import model.Board;
 import model.Difficulty;
@@ -205,6 +207,13 @@ public class BoardController {
 				startNewGame(Difficulty.HARD);
 			}
 		});
+		bv.getCustom().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				startCustomGame();
+			}
+		});
 		timer = new Timer(1000, new ActionListener() {
 
 			@Override
@@ -331,4 +340,52 @@ public class BoardController {
 		this.b = b;
 	}
 
+	private void startCustomGame() {
+
+		try {
+			JTextField rowField = new JTextField("9");
+			JTextField colField = new JTextField("9");
+			JTextField mineField = new JTextField("10");
+			JPanel panel = new JPanel(new java.awt.GridLayout(3, 2, 5, 5));
+			panel.add(new javax.swing.JLabel("Rows:"));
+			panel.add(rowField);
+			panel.add(new javax.swing.JLabel("Columns:"));
+			panel.add(colField);
+			panel.add(new javax.swing.JLabel("Mines:"));
+			panel.add(mineField);
+			int result = JOptionPane.showConfirmDialog(bv, panel, "Custom Game", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE);
+			if (result != JOptionPane.OK_OPTION) {
+				return;
+			}
+			int rows = Integer.parseInt(rowField.getText());
+			int cols = Integer.parseInt(colField.getText());
+			int mines = Integer.parseInt(mineField.getText());
+			if (rows <= 0)
+				throw new IllegalArgumentException("Số hàng phải lớn hơn 0!");
+			if (rows > 50)
+				throw new IllegalArgumentException("Số hàng tối đa là 50!");
+			if (cols <= 0)
+				throw new IllegalArgumentException("Số cột phải lớn hơn 0!");
+			if (cols > 50)
+				throw new IllegalArgumentException("Số cột tối đa là 50!");
+			if (mines <= 0)
+				throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
+			if (mines >= rows * cols)
+				throw new IllegalArgumentException("Số mìn không được lớn hơn hoặc bằng số ô!");
+			if (mines > rows * cols * 0.8)
+				throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
+			if (timer != null) {
+				timer.stop();
+			}
+			bv.dispose();
+			Board newBoard = new Board(new model.GameConfig(rows, cols, mines));
+			BoardView newView = new BoardView(newBoard);
+			new BoardController(newView, newBoard);
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(bv, "Vui lòng nhập số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(bv, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 }

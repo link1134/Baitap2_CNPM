@@ -31,7 +31,7 @@ public class BoardView extends JFrame {
 	private JButton smileBtn;
 	private JButton hintBtn;
 	private LabelNumber lbtime, lbbomb;
-	private JMenuItem easy, medium, hard, exit, importItem, exportItem, pauseItem;
+	private JMenuItem easy, medium, hard, custom, exit, importItem, exportItem, pauseItem;
 
 	public BoardView(Board board) {
 		this.board = board;
@@ -52,6 +52,7 @@ public class BoardView extends JFrame {
 		easy = new JMenuItem("Easy");
 		medium = new JMenuItem("Medium");
 		hard = new JMenuItem("Hard");
+		custom = new JMenuItem("Custom");
 		exit = new JMenuItem("Exit");
 		importItem = new JMenuItem("Import");
 		exportItem = new JMenuItem("Export");
@@ -59,6 +60,7 @@ public class BoardView extends JFrame {
 		gameMenu2.add(easy);
 		gameMenu2.add(medium);
 		gameMenu2.add(hard);
+		gameMenu2.add(custom);
 		gameMenu.add(pauseItem);
 		gameMenu.add(importItem);
 		gameMenu.add(exportItem);
@@ -102,18 +104,18 @@ public class BoardView extends JFrame {
 		smileBtn.setMargin(new Insets(0, 0, 0, 0));
 
 		p13.add(smileBtn);
-		
+
 		// Nút Hint - đặt cạnh nút smile để người chơi dễ truy cập
-        hintBtn = new JButton("Hint");
-        hintBtn.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
-        hintBtn.setMargin(new java.awt.Insets(2, 6, 2, 6));
-        hintBtn.setFocusPainted(false);
-        hintBtn.setToolTipText("Gợi ý một ô an toàn (miễn phí)");
-        p13.add(hintBtn);
-		
+		hintBtn = new JButton("Hint");
+		hintBtn.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 11));
+		hintBtn.setMargin(new java.awt.Insets(2, 6, 2, 6));
+		hintBtn.setFocusPainted(false);
+		hintBtn.setToolTipText("Gợi ý một ô an toàn (miễn phí)");
+		p13.add(hintBtn);
+
 		int rows = board.getRows();
 		int cols = board.getCols();
-		
+
 		cells = new JButton[rows][cols];
 
 		JPanel boardPanel = new JPanel();
@@ -211,18 +213,22 @@ public class BoardView extends JFrame {
 			smileBtn.setIcon(getSmileIcon("smileWin"));
 			JOptionPane.showMessageDialog(this, "Bạn đã thắng !");
 			pauseItem.setEnabled(false);
-			if (hintBtn != null) hintBtn.setEnabled(false);
+			if (hintBtn != null)
+				hintBtn.setEnabled(false);
 
 		} else if (board.getGameState() == GameState.LOSE) {
 			smileBtn.setIcon(getSmileIcon("smileLose"));
 			JOptionPane.showMessageDialog(this, "Bạn đã thua !");
 			pauseItem.setEnabled(false);
-			if (hintBtn != null) hintBtn.setEnabled(false);
-        } else if (board.getGameState() == GameState.RUNNING) {
-            if (hintBtn != null) hintBtn.setEnabled(true);
-        } else {
-            // PAUSE or other → disable hint
-            if (hintBtn != null) hintBtn.setEnabled(false);
+			if (hintBtn != null)
+				hintBtn.setEnabled(false);
+		} else if (board.getGameState() == GameState.RUNNING) {
+			if (hintBtn != null)
+				hintBtn.setEnabled(true);
+		} else {
+			// PAUSE or other → disable hint
+			if (hintBtn != null)
+				hintBtn.setEnabled(false);
 		}
 	}
 
@@ -393,11 +399,16 @@ public class BoardView extends JFrame {
 		return overlay;
 	}
 
-    public JButton getHintBtn() {
-        return hintBtn;
-    }
+	public JButton getHintBtn() {
+		return hintBtn;
+	}
 
-    public void setHintBtn(JButton hintBtn) {
-        this.hintBtn = hintBtn;
-    }
+	public JMenuItem getCustom() {
+		return custom;
+	}
+
+	public void setHintBtn(JButton hintBtn) {
+		this.hintBtn = hintBtn;
+	}
+	
 }
