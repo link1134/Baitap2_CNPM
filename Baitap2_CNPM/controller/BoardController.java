@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.Timer;
-
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -374,8 +374,6 @@ public class BoardController {
 				throw new IllegalArgumentException("Số cột tối đa là 50!");
 			if (mines <= 0)
 				throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
-			if (mines >= rows * cols)
-				throw new IllegalArgumentException("Số mìn không được lớn hơn hoặc bằng số ô!");
 			if (mines > rows * cols * 0.8)
 				throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
 			if (timer != null) {

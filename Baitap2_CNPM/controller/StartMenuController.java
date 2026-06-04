@@ -10,8 +10,11 @@ import model.Difficulty;
 import model.GameConfig;
 import view.BoardView;
 import view.StartMenu;
-/** 5/6/2026 - Mai Vũ Thành Hiển: Gắn actionListioner cho difficultyBox, để bật mở cái panel của custom nếu chọn.
- *  **/
+
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Gắn actionListioner cho difficultyBox, để bật
+ * mở cái panel của custom nếu chọn.
+ **/
 public class StartMenuController {
 	private StartMenu startMenu;
 
@@ -89,9 +92,7 @@ public class StartMenuController {
 			throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
 		}
 
-		if (mines >= rows * cols) {
-			throw new IllegalArgumentException("Số mìn không được lớn hơn hoặc bằng số hàng × số cột!");
-		} else if (mines > rows * cols * 0.8) {
+		if (mines > rows * cols * 0.8) {
 			throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
 		}
 		return new GameConfig(rows, cols, mines);
