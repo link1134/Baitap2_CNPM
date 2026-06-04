@@ -20,7 +20,8 @@ import javax.swing.JPanel;
 import model.Board;
 import model.Cell;
 import model.GameState;
-
+/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm jmenuitem custom.
+ *  **/
 public class BoardView extends JFrame {
 	private JPanel p1, p2, p11, p12, p13;
 	private PauseOverlay overlay;

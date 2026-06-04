@@ -10,7 +10,8 @@ import model.Difficulty;
 import model.GameConfig;
 import view.BoardView;
 import view.StartMenu;
-
+/** 5/6/2026 - Mai Vũ Thành Hiển: Gắn actionListioner cho difficultyBox, để bật mở cái panel của custom nếu chọn.
+ *  **/
 public class StartMenuController {
 	private StartMenu startMenu;
 

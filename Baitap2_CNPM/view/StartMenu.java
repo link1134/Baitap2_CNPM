@@ -20,7 +20,9 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import model.Difficulty;
-
+/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm vào difficultyBox độ khó custom, thêm customPanel để chọn các thông số gồm số bom,
+ *  số hàng hay số cột
+ *  **/
 public class StartMenu extends JFrame {
 	private LoadData data;
 	private JComboBox<Difficulty> difficultyBox;
@@ -28,7 +30,6 @@ public class StartMenu extends JFrame {
 	private JTextField rowField;
 	private JTextField colField;
 	private JTextField mineField;
-
 	private JPanel customPanel;
 
 	public StartMenu() {

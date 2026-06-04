@@ -1,7 +1,8 @@
 package model;
 
 import java.io.Serializable;
-
+/** Mai Vũ Thành Hiển - 5/6/2026: Tạo class Gameconfig 
+ *  **/
 public class GameConfig implements Serializable {
 	private final int rows;
 	private final int cols;

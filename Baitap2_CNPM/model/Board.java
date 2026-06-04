@@ -7,7 +7,7 @@ import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
-
+/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, xóa thuộc tính difficulity cũng như các get, set của nó **/
 public class Board implements Serializable {
 	private Cell[][] grid;
 	private int rows;
@@ -17,6 +17,7 @@ public class Board implements Serializable {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
+	
 	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
 

@@ -17,6 +17,10 @@ import model.Difficulty;
 import model.GameState;
 import view.BoardView;
 
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Gắn actionListener cho jmenuitem custom để nó
+ * nhảy pop up chọn số bom, số hàng và cột khi chọn.
+ **/
 public class BoardController {
 	private BoardView bv;
 	private Board b;
@@ -341,17 +345,16 @@ public class BoardController {
 	}
 
 	private void startCustomGame() {
-
 		try {
 			JTextField rowField = new JTextField("9");
 			JTextField colField = new JTextField("9");
 			JTextField mineField = new JTextField("10");
 			JPanel panel = new JPanel(new java.awt.GridLayout(3, 2, 5, 5));
-			panel.add(new javax.swing.JLabel("Rows:"));
+			panel.add(new JLabel("Rows:"));
 			panel.add(rowField);
-			panel.add(new javax.swing.JLabel("Columns:"));
+			panel.add(new JLabel("Columns:"));
 			panel.add(colField);
-			panel.add(new javax.swing.JLabel("Mines:"));
+			panel.add(new JLabel("Mines:"));
 			panel.add(mineField);
 			int result = JOptionPane.showConfirmDialog(bv, panel, "Custom Game", JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.PLAIN_MESSAGE);

@@ -1,5 +1,8 @@
 package model;
 
+/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, thêm constructor gameconfig và chỉnh sửa lại cho hoạt động với
+ * game config.
+ *  **/
 public enum Difficulty {
 
 	EASY(new GameConfig(9, 9, 10)), MEDIUM(new GameConfig(16, 16, 40)), HARD(new GameConfig(16, 30, 99)), CUSTOM(null);
