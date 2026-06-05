@@ -29,10 +29,22 @@ public class BoardController {
 		this.b = b;
 
 		init();
-
 	}
 
+	// ─── KHỞI TẠO CÁC ĐIỀU KHIỂN ─────────────────────────────────────
 	private void init() {
+		initPauseControl();
+		initSmileButton();
+		initHintButton();
+		initExportControl();
+		initImportControl();
+		initDifficultyButtons();
+		initTimer();
+		initCellListeners();
+	}
+
+	// ─── 1. TẠM DỪNG / TIẾP TỤC (Pause/Unpause) ─────────────────────
+	private void initPauseControl() {
 		bv.getPauseItem().addActionListener(new ActionListener() {
 
 			@Override
@@ -68,40 +80,46 @@ public class BoardController {
 				}
 			}
 		});
+	}
+
+	// ─── 2. CHƠI LẠI (Restart) ───────────────────────────────────────
+	private void initSmileButton() {
 		bv.getSmileBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				restartGame();
 			}
 		});
+	}    // ─── 9. GỢI Ý (UC_09_GH) ─────────────────────────────────────────────
+    private void initHintButton() {
+        bv.getHintBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 9.0.1 Người chơi thực hiện thao tác nhấp vào nút "Gợi ý" (Hint) trên giao diện bàn chơi.
+                // 9.0.2 Hệ thống (BoardView) tiếp nhận sự kiện kích hoạt và gửi yêu cầu lấy gợi ý đến bộ điều khiển (BoardController).
+                // 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ không còn ô an toàn nào khác để gợi ý.
+                if (b.getGameState() != GameState.RUNNING) {
+                    // 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự kiện.
+                    // 9.2.2 Use case kết thúc.
+                    return;
+                }
+                // 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi (Board).
+                boolean didHint = b.giveHint();
+                // 9.0.6 Bộ điều khiển tiếp nhận tọa độ ô gợi ý từ hệ thống (thông qua kết quả trả về).
+                // 9.0.9 Hệ thống hoàn tất quá trình xử lý và cập nhật lại toàn bộ giao diện bàn chơi để hiển thị trạng thái mới nhất.
+                bv.refreshBoard();
+                updateBombUI();
 
-		// ─── 9. GỢI Ý (UC_09_GH) ─────────────────────────────────────────────
-		bv.getHintBtn().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 9.0.1 Người chơi thực hiện thao tác nhấp vào nút "Gợi ý" (Hint) trên giao diện bàn chơi.
-				// 9.0.2 Hệ thống (BoardView) tiếp nhận sự kiện kích hoạt và gửi yêu cầu lấy gợi ý đến bộ điều khiển (BoardController).
-				// 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ không còn ô an toàn nào khác để gợi ý.
-				if (b.getGameState() != GameState.RUNNING) {
-					// 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự kiện.
-					// 9.2.2 Use case kết thúc.
-					return;
-				}
-				// 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi (Board).
-				boolean didHint = b.giveHint();
-				// 9.0.6 Bộ điều khiển tiếp nhận tọa độ ô gợi ý từ hệ thống (thông qua kết quả trả về).
+                if (!didHint && b.getGameState() == GameState.RUNNING) {
+                    JOptionPane.showMessageDialog(bv, "Không có gợi ý phù hợp lúc này.", "Hint",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+    }
 
-				// 9.0.9 Hệ thống hoàn tất quá trình xử lý và cập nhật lại toàn bộ giao diện bàn chơi để hiển thị trạng thái mới nhất.
-				bv.refreshBoard();
-				updateBombUI();
-
-				if (!didHint && b.getGameState() == GameState.RUNNING) {
-					JOptionPane.showMessageDialog(bv, "Không có gợi ý phù hợp lúc này.", "Hint",
-							JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
-		});
-
+	// ─── EXPORT (XUẤT DỮ LIỆU) ───────────────────────────────────────
+	private void initExportControl() {
 		bv.getExportItem().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -119,6 +137,10 @@ public class BoardController {
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
+	}
+
+	// ─── IMPORT (NHẬP DỮ LIỆU) ───────────────────────────────────────
+	private void initImportControl() {
 		bv.getImportItem().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -154,6 +176,10 @@ public class BoardController {
 				newView.getLbbomb().setNumber(mineText);
 			}
 		});
+	}
+
+	// ─── CHỌN ĐỘ KHÓ (Difficulty) ────────────────────────────────────
+	private void initDifficultyButtons() {
 		bv.getEasy().addActionListener(new ActionListener() {
 
 			@Override
@@ -177,6 +203,10 @@ public class BoardController {
 				startNewGame(Difficulty.HARD);
 			}
 		});
+	}
+
+	// ─── TIMER (ĐỒNG HỒ) ─────────────────────────────────────────────
+	private void initTimer() {
 		timer = new Timer(1000, new ActionListener() {
 
 			@Override
@@ -194,46 +224,45 @@ public class BoardController {
 				bv.getLbtime().setNumber(text);
 			}
 		});
-		for (int row = 0; row < bv.getCells().length; row++) {
-			for (int col = 0; col < bv.getCells()[0].length; col++) {
-				int r = row;
-				int c = col;
-				bv.getCells()[row][col].addMouseListener(new MouseAdapter() {
-					@Override
-					public void mousePressed(MouseEvent e) {
-						// 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi đã kết thúc (thắng hoặc thua).
-						if (b.getGameState() != GameState.RUNNING) {
-							// 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực hiện thay đổi trạng thái của ô.
-							return;
-						} 
-						if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
-							boolean firstMove = b.isFirstMove();
+	}    // ─── 4. ĐẶT CỜ / 8. GỠ CỜ (UC_04_DC / UC_04_GC) ─────────────────
+    private void initCellListeners() {
+        for (int row = 0; row < bv.getCells().length; row++) {
+            for (int col = 0; col < bv.getCells()[0].length; col++) {
+                int r = row;
+                int c = col;
+                bv.getCells()[row][col].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        // 8.2.0 Tại bước 8.1.1, nếu người chơi nhấp gỡ cờ nhưng ván chơi đã kết thúc (thắng hoặc thua).
+                        if (b.getGameState() != GameState.RUNNING) {
+                            // 8.2.1 Hệ thống chặn sự kiện chuột phải, giữ nguyên hiện trạng và không thực hiện thay đổi trạng thái của ô.
+                            return;
+                        }
+                        if (e.getButton() == MouseEvent.BUTTON1) { // Left-click
+                            boolean firstMove = b.isFirstMove();
+                            b.reveal(r, c);
+                            if (firstMove) {
+                                timer.start();
+                            }
+                        } else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
+                            // 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên giao diện bàn chơi.
+                            // 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có cờ trên giao diện bàn chơi.
+                            // 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
+                            // 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
+                            // 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
+                            // 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
+                            b.toggleFlag(r, c);
+                        }
 
-							b.reveal(r, c);
-
-							if (firstMove) {
-								timer.start();
-							}
-
-						} else if (e.getButton() == MouseEvent.BUTTON3) { // Right-click
-							// 4.0.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô trên giao diện bàn chơi.
-							// 8.1.1 Người chơi thực hiện thao tác nhấp chuột phải vào một ô đang có cờ trên giao diện bàn chơi.
-							// 4.0.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
-							// 8.1.2 Hệ thống (BoardView) tiếp nhận sự kiện chuột và gửi tín hiệu xử lý nút bấm đến bộ điều khiển (BoardController).
-							// 4.0.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
-							// 8.1.3 Bộ điều khiển gọi hàm bắt đầu xử lý sự kiện trên đối tượng bàn chơi (Board).
-							b.toggleFlag(r, c);
-						}
-
-						// 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại ô vừa nhấp và cập nhật bộ đếm cờ).
-						// 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị (xóa hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
-						bv.refreshBoard();
-						updateBombUI();
-					}
-				});
-			}
-		}
-	}
+                        // 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại ô vừa nhấp và cập nhật bộ đếm cờ).
+                        // 8.1.9 Bộ điều khiển yêu cầu BoardView cập nhật lại giao diện hiển thị (xóa hình ảnh lá cờ trên ô và tăng số trên bộ đếm).
+                        bv.refreshBoard();
+                        updateBombUI();
+                    }
+                });
+            }
+        }
+    }
 
 	protected void updateView() {
 		bv.refreshBoard();
@@ -285,5 +314,4 @@ public class BoardController {
 	public void setB(Board b) {
 		this.b = b;
 	}
-
 }

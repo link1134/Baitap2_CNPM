@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Base64;
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Random;
 
 public class Board implements Serializable {
@@ -151,37 +151,49 @@ public class Board implements Serializable {
         this.gameState = gameState;
     }
 
+    // ─── 3. MỞ Ô (UC_03_MO) ──────────────────────────────────────────────
     public void reveal(int r, int c) {
-
         Cell cell = grid[r][c];
-
         if (cell.isRevealed() || cell.isFlagged()) {
             return;
         }
 
+        // Tại bước 3.0.4, nếu đây là lần đầu tiên người chơi mở một ô trên bàn chơi.
         if (firstMove) {
-
+            // 3.4.1 placeMines() Hệ thống tiến hành đặt các quả mìn vào các vị trí ngẫu
+            // nhiên trên bàn chơi, đảm bảo ô đầu tiên được chọn không chứa mìn.
             placeMines(r, c);
-
+            // 3.4.2: caculateNearbyMines() Hệ thống tính toán số lượng mìn lân cận cho tất
+            // cả các ô trên bàn chơi.
             calculateNearbyMines();
-
             firstMove = false;
         }
 
+        // 3.0.6 setRevealed(true) Hệ thống cập nhật trạng thái ô được chọn thành đã
+        // được mở.
         cell.setRevealed(true);
+
+        // 3.1.0 Tại bước 3.0.6, nếu ô được chọn chứa mìn.
         if (cell.isMine()) {
             cell.setExploded(true);
+            // 3.1.1 Hệ thống hiển thị toàn bộ các ô chứa mìn trên bàn chơi.
             revealAllMines();
+            // 3.1.2 Hệ thống cập nhật trạng thái trò chơi thành thua
             gameState = GameState.LOSE;
             return;
         }
 
+        // 3.2.0 Tại bước 3.0.6, nếu ô được chọn không chứa mìn và không có mìn lân cận
         if (!cell.isMine() && cell.getNearbyMines() == 0) {
-
+            // 3.2.1 Hệ thống tự động mở các ô lân cận xung quanh ô đã chọn.
             floodFill(r, c);
         }
-        if (checkWin()) {
 
+        // 3.3.0 và 3.3.1 Sau khi thực hiện mở tại bước 3.0.6, Hệ thống kiểm tra tất
+        // cả các ô không chứa mìn đã hết được mở.
+        if (checkWin()) {
+            // 3.3.2 Nếu điều kiện đáp ứng, hệ thống cập nhật trạng thái trò chơi thành
+            // thắng.
             gameState = GameState.WIN;
         }
     }
@@ -229,13 +241,9 @@ public class Board implements Serializable {
     }
 
     private void revealAllMines() {
-
         for (int row = 0; row < rows; row++) {
-
             for (int col = 0; col < cols; col++) {
-
                 if (grid[row][col].isMine()) {
-
                     grid[row][col].setRevealed(true);
                 }
             }
@@ -243,84 +251,62 @@ public class Board implements Serializable {
     }
 
     private boolean checkWin() {
-
         for (int row = 0; row < rows; row++) {
-
             for (int col = 0; col < cols; col++) {
-
                 Cell cell = grid[row][col];
-
                 if (!cell.isMine() && !cell.isRevealed()) {
-
                     return false;
                 }
             }
         }
-
         return true;
     }
 
     private void floodFill(int r, int c) {
-
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
-
         for (int i = 0; i < 8; i++) {
-
             int nr = r + dr[i];
             int nc = c + dc[i];
 
             if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
-
                 continue;
             }
 
             Cell neighbor = grid[nr][nc];
-
             if (neighbor.isRevealed() || neighbor.isMine() || neighbor.isFlagged()) {
-
                 continue;
             }
 
             neighbor.setRevealed(true);
-
             if (neighbor.getNearbyMines() == 0) {
-
                 floodFill(nr, nc);
             }
         }
     }
 
     private void calculateNearbyMines() {
-
         int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
 
         for (int row = 0; row < rows; row++) {
-
             for (int col = 0; col < cols; col++) {
-
                 if (grid[row][col].isMine()) {
                     continue;
                 }
 
                 int count = 0;
-
                 for (int i = 0; i < 8; i++) {
-
                     int nr = row + dr[i];
                     int nc = col + dc[i];
 
                     if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
-
                         continue;
                     }
-
                     if (grid[nr][nc].isMine()) {
                         count++;
                     }
                 }
-
                 grid[row][col].setNearbyMines(count);
             }
         }
@@ -329,25 +315,18 @@ public class Board implements Serializable {
     private void placeMines(int safeRow, int safeCol) {
         // TODO Auto-generated method stub
         Random random = new Random();
-
         int placed = 0;
-
         while (placed < mineCount) {
-
             int row = random.nextInt(rows);
             int col = random.nextInt(cols);
 
             if (grid[row][col].isMine()) {
                 continue;
             }
-
             if (Math.abs(row - safeRow) <= 1 && Math.abs(col - safeCol) <= 1) {
-
                 continue;
             }
-
             grid[row][col].setMine(true);
-
             placed++;
         }
     }
@@ -365,20 +344,17 @@ public class Board implements Serializable {
 
     /**
      * Cung cấp gợi ý (Hint) cho người chơi bằng cách tự động mở một ô an toàn.
-     * Sử dụng logic suy luận cơ bản trước (nếu cờ xung quanh == số mìn của ô đã mở → các ô còn lại an toàn),
-     * sau đó fallback chọn ô an toàn bất kỳ (ưu tiên ô có số nhỏ).
+     * Sử dụng logic suy luận cơ bản trước (nếu cờ xung quanh == số mìn của ô đã mở → các ô còn lại an toàn),     * sau đó fallback chọn ô an toàn bất kỳ (ưu tiên ô có số nhỏ).
      */
     // ─── 9. GỢI Ý (UC_09_GH) ─────────────────────────────────────────────
     public boolean giveHint() {
         // 9.0.3 Bộ điều khiển gọi hàm xử lý tính toán gợi ý trên đối tượng bàn chơi (Board).
-
         // 9.2.0 Tại bước 9.0.3, nếu ván chơi không ở trạng thái RUNNING hoặc bàn cờ không còn ô an toàn nào khác để gợi ý.
         if (gameState != GameState.RUNNING) {
             // 9.2.1 Hệ thống chặn yêu cầu gợi ý, không thực hiện hành động và bỏ qua sự kiện.
             // 9.2.2 Use case kết thúc.
             return false;
         }
-
         if (firstMove) {
             return false;
         }
@@ -399,7 +375,6 @@ public class Board implements Serializable {
         // 9.0.7 Bộ điều khiển phối hợp và kích hoạt cơ chế reveal hiện có để tự động mở ô an toàn này.
         reveal(r, c);
         // 9.0.8 Hệ thống cập nhật trạng thái ô thành đã mở, kích hoạt lan truyền flood fill (nếu ô trống), cập nhật bộ đếm/timer và kiểm tra điều kiện Thắng/Thua.
-
         return true;
     }
 
