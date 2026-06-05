@@ -9,30 +9,33 @@ import javax.swing.JPanel;
 
 public class PauseOverlay extends JPanel {
 
-    public PauseOverlay() {
-        setOpaque(false);
-    }
+	public PauseOverlay() {
+		setOpaque(false);
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
+	@Override
+	protected void paintComponent(Graphics g) {
 
-        Graphics2D g2 = (Graphics2D) g.create();
+		Graphics2D g2 = (Graphics2D) g.create();
 
-        g2.setColor(new Color(0, 0, 0, 120));
-        g2.fillRect(0, 0, getWidth(), getHeight());
+		g2.setColor(new Color(0, 0, 0, 120));
+		g2.fillRect(0, 0, getWidth(), getHeight());
 
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 60));
+		g2.setColor(Color.WHITE);
+		String text = "PAUSED";
 
-        String text = "PAUSED";
+		int fontSize = (int) (Math.min(getWidth(), getHeight()) * 0.25);
+		fontSize = Math.max(18, fontSize);
+		fontSize = Math.min(80, fontSize);
+		g2.setFont(new Font("Arial", Font.BOLD, fontSize));
 
-        int textWidth = g2.getFontMetrics().stringWidth(text);
+		int textWidth = g2.getFontMetrics().stringWidth(text);
 
-        int x = (getWidth() - textWidth) / 2;
-        int y = getHeight() / 2;
+		int x = (getWidth() - textWidth) / 2;
+		int y = getHeight() / 2;
 
-        g2.drawString(text, x, y);
+		g2.drawString(text, x, y);
 
-        g2.dispose();
-    }
+		g2.dispose();
+	}
 }

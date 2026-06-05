@@ -1,31 +1,28 @@
 package model;
 
+/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, thêm constructor gameconfig và chỉnh sửa lại cho hoạt động với
+ * game config.
+ *  **/
 public enum Difficulty {
 
-    EASY(9, 9, 0.12),
-    MEDIUM(16, 16, 0.16),
-    HARD(16, 30, 0.20);
+	EASY(new GameConfig(9, 9, 10)), MEDIUM(new GameConfig(16, 16, 40)), HARD(new GameConfig(16, 30, 99)), CUSTOM(null);
 
-    private final int rows;
-    private final int cols;
-    private final double mineDensity;
+	private final GameConfig config;
 
-    Difficulty(int rows, int cols, double mineDensity) {
+	Difficulty(GameConfig config) {
+		this.config = config;
+	}
 
-        this.rows = rows;
-        this.cols = cols;
-        this.mineDensity = mineDensity;
-    }
+	public GameConfig getConfig() {
+		if (config == null) {
+			return null;
+		}
 
-    public int getRows() {
-        return rows;
-    }
+		return new GameConfig(config.getRows(), config.getCols(), config.getMineCount());
+	}
 
-    public int getCols() {
-        return cols;
-    }
-
-    public double getMineDensity() {
-        return mineDensity;
-    }
+	@Override
+	public String toString() {
+		return name();
+	}
 }
