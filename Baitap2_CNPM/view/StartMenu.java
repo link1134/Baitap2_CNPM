@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,8 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-
 import model.Difficulty;
 /** 5/6/2026 - Mai Vũ Thành Hiển: Thêm vào difficultyBox độ khó custom, thêm customPanel để chọn các thông số gồm số bom,
  *  số hàng hay số cột
@@ -194,5 +190,6 @@ public class StartMenu extends JFrame {
 
 	public static void main(String[] args) {
 		StartMenu sm = new StartMenu();
+		new controller.StartMenuController(sm);
 	}
 }
