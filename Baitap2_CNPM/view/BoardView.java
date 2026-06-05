@@ -10,18 +10,23 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import model.Board;
 import model.Cell;
+import model.CustomGameInput;
 import model.GameState;
-/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm jmenuitem custom.
- *  **/
+
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Thêm jmenuitem custom.
+ **/
 public class BoardView extends JFrame {
 	private JPanel p1, p2, p11, p12, p13;
 	private PauseOverlay overlay;
@@ -411,5 +416,31 @@ public class BoardView extends JFrame {
 	public void setHintBtn(JButton hintBtn) {
 		this.hintBtn = hintBtn;
 	}
-	
+
+	public CustomGameInput showCustomDialog() {
+
+		JTextField rowField = new JTextField("9");
+		JTextField colField = new JTextField("9");
+		JTextField mineField = new JTextField("10");
+
+		JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
+
+		panel.add(new JLabel("Rows:"));
+		panel.add(rowField);
+
+		panel.add(new JLabel("Columns:"));
+		panel.add(colField);
+
+		panel.add(new JLabel("Mines:"));
+		panel.add(mineField);
+
+		int result = JOptionPane.showConfirmDialog(this, panel, "Custom Game", JOptionPane.OK_CANCEL_OPTION);
+
+		if (result != JOptionPane.OK_OPTION) {
+			return null;
+		}
+
+		return new CustomGameInput(Integer.parseInt(rowField.getText()), Integer.parseInt(colField.getText()),
+				Integer.parseInt(mineField.getText()));
+	}
 }

@@ -13,7 +13,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import model.Board;
+import model.CustomGameInput;
 import model.Difficulty;
+import model.GameConfig;
 import model.GameState;
 import view.BoardView;
 
@@ -150,7 +152,8 @@ public class BoardController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 5.0.3. Hệ thống hiển thị dialog nhập chuỗi save
-				String data = JOptionPane.showInputDialog(bv, "Nhập chuỗi save:", "Import Game", JOptionPane.PLAIN_MESSAGE);
+				String data = JOptionPane.showInputDialog(bv, "Nhập chuỗi save:", "Import Game",
+						JOptionPane.PLAIN_MESSAGE);
 				// 5.2.1 Người chơi nhấn Cancel hoặc nhập chuỗi trống
 				if (data == null || data.trim().isBlank()) {
 					// 5.2.2. Kết thúc use case, không thực hiện import
@@ -200,7 +203,7 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.EASY);
+				startNewGame(Difficulty.EASY.getConfig());
 			}
 		});
 
@@ -208,7 +211,7 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.MEDIUM);
+				startNewGame(Difficulty.MEDIUM.getConfig());
 			}
 		});
 
@@ -216,7 +219,7 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.HARD);
+				startNewGame(Difficulty.HARD.getConfig());
 			}
 		});
 		bv.getCustom().addActionListener(new ActionListener() {
@@ -317,22 +320,18 @@ public class BoardController {
 		bv.dispose();
 
 		Board newBoard = new Board(b.getConfig());
-
 		BoardView newView = new BoardView(newBoard);
-
 		new BoardController(newView, newBoard);
 	}
 
-	private void startNewGame(Difficulty difficulty) {
+	private void startNewGame(GameConfig config) {
 
 		if (timer != null) {
 			timer.stop();
 		}
 		bv.dispose();
-		Board newBoard = new Board(difficulty.getConfig());
-
+		Board newBoard = new Board(config);
 		BoardView newView = new BoardView(newBoard);
-
 		new BoardController(newView, newBoard);
 	}
 
@@ -354,47 +353,39 @@ public class BoardController {
 
 	private void startCustomGame() {
 		try {
-			JTextField rowField = new JTextField("9");
-			JTextField colField = new JTextField("9");
-			JTextField mineField = new JTextField("10");
-			JPanel panel = new JPanel(new java.awt.GridLayout(3, 2, 5, 5));
-			panel.add(new JLabel("Rows:"));
-			panel.add(rowField);
-			panel.add(new JLabel("Columns:"));
-			panel.add(colField);
-			panel.add(new JLabel("Mines:"));
-			panel.add(mineField);
-			int result = JOptionPane.showConfirmDialog(bv, panel, "Custom Game", JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.PLAIN_MESSAGE);
-			if (result != JOptionPane.OK_OPTION) {
+			CustomGameInput input = bv.showCustomDialog();
+			if (input == null) {
 				return;
 			}
-			int rows = Integer.parseInt(rowField.getText());
-			int cols = Integer.parseInt(colField.getText());
-			int mines = Integer.parseInt(mineField.getText());
-			if (rows <= 0)
-				throw new IllegalArgumentException("Số hàng phải lớn hơn 0!");
-			if (rows > 50)
-				throw new IllegalArgumentException("Số hàng tối đa là 50!");
-			if (cols <= 0)
-				throw new IllegalArgumentException("Số cột phải lớn hơn 0!");
-			if (cols > 50)
-				throw new IllegalArgumentException("Số cột tối đa là 50!");
-			if (mines <= 0)
-				throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
-			if (mines > rows * cols * 0.8)
-				throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
-			if (timer != null) {
-				timer.stop();
-			}
-			bv.dispose();
-			Board newBoard = new Board(new model.GameConfig(rows, cols, mines));
-			BoardView newView = new BoardView(newBoard);
-			new BoardController(newView, newBoard);
+			validateConfig(input.getRows(), input.getCols(), input.getMines());
+			GameConfig config = new GameConfig(input.getRows(), input.getCols(), input.getMines());
+			startNewGame(config);
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(bv, "Vui lòng nhập số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(bv, "Vui lòng nhập số nguyên hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(bv, ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
+	private void validateConfig(int rows, int cols, int mines) {
+
+		if (rows <= 0)
+			throw new IllegalArgumentException("Số hàng phải lớn hơn 0!");
+
+		if (rows > 50)
+			throw new IllegalArgumentException("Số hàng tối đa là 50!");
+
+		if (cols <= 0)
+			throw new IllegalArgumentException("Số cột phải lớn hơn 0!");
+
+		if (cols > 50)
+			throw new IllegalArgumentException("Số cột tối đa là 50!");
+
+		if (mines <= 0)
+			throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
+
+		if (mines > rows * cols * 0.8)
+			throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
+	}
+
 }
