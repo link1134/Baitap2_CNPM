@@ -203,7 +203,8 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.EASY.getConfig());
+				GameConfig easyMode = Difficulty.EASY.getConfig();
+				startNewGame(easyMode);
 			}
 		});
 
@@ -211,7 +212,8 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.MEDIUM.getConfig());
+				GameConfig mediumMode = Difficulty.MEDIUM.getConfig();
+				startNewGame(mediumMode);
 			}
 		});
 
@@ -219,7 +221,8 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				startNewGame(Difficulty.HARD.getConfig());
+				GameConfig hardMode = Difficulty.HARD.getConfig();
+				startNewGame(hardMode);
 			}
 		});
 		bv.getCustom().addActionListener(new ActionListener() {
