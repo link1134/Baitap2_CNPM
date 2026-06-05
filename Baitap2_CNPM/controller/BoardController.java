@@ -371,23 +371,17 @@ public class BoardController {
 	}
 
 	private void validateConfig(int rows, int cols, int mines) {
-
 		if (rows <= 0)
 			throw new IllegalArgumentException("Số hàng phải lớn hơn 0!");
-
-		if (rows > 50)
+		else if (rows > 50)
 			throw new IllegalArgumentException("Số hàng tối đa là 50!");
-
 		if (cols <= 0)
 			throw new IllegalArgumentException("Số cột phải lớn hơn 0!");
-
-		if (cols > 50)
+		else if (cols > 50)
 			throw new IllegalArgumentException("Số cột tối đa là 50!");
-
 		if (mines <= 0)
 			throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
-
-		if (mines > rows * cols * 0.8)
+		else if (mines > rows * cols * 0.8)
 			throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
 	}
 
