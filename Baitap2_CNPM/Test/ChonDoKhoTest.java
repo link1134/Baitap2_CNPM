@@ -10,7 +10,7 @@ import model.Difficulty;
 import model.GameConfig;
 import view.StartMenu;
 
-public class TestChonDoKho {
+public class ChonDoKhoTest {
 	// Kiểm tra tạo GameConfig cho độ khó EASY.
 	@Test
 	public void testEasyConfig() {
