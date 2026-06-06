@@ -32,7 +32,7 @@ public class DatCoTest {
     @Before
     public void setUp() {
         // Dùng EASY: 9x9, ~10 mìn
-        board = new Board(Difficulty.EASY);
+        board = new Board(Difficulty.EASY.getConfig());
     }
 
     // =========================================================

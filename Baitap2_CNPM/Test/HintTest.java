@@ -27,7 +27,7 @@ public class HintTest {
 
     @Before
     public void setUp() {
-        board = new Board(Difficulty.EASY);
+        board = new Board(Difficulty.EASY.getConfig());
     }
 
     // =========================================================

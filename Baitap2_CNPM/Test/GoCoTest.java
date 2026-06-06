@@ -31,7 +31,7 @@ public class GoCoTest {
 
     @Before
     public void setUp() {
-        board = new Board(Difficulty.EASY);
+        board = new Board(Difficulty.EASY.getConfig());
     }
 
     // =========================================================
