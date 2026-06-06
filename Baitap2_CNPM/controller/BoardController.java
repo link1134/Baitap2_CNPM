@@ -199,6 +199,11 @@ public class BoardController {
 				newView.getLbbomb().setNumber(mineText);
 			}
 		});
+		// Chọn độ khó khi đang chơi.
+		// [2.1.1]/[2.1.2]Người chơi chọn mức độ khó từ giao diện và xác nhận chọn độ
+		// khó
+		// [2.1.3]: Hệ thống tiếp nhận lựa chọn
+		// [2.1.4]: Hệ thống khởi tạo cấu hình tương ứng với độ khó người chơi chọn.
 		bv.getEasy().addActionListener(new ActionListener() {
 
 			@Override
@@ -356,11 +361,17 @@ public class BoardController {
 
 	private void startCustomGame() {
 		try {
+			// [2.2.1]: Hệ thống hiển thị nơi cho người chơi nhập các thông số tùy chỉnh gồm
+			// số hàng, số cột và số mìn.
+			// [2.2.2]: Người chơi nhập vào các thông số mong muốn
+			// [2.2.3]: Người chơi xác nhận tiếp tục.
 			CustomGameInput input = bv.showCustomDialog();
 			if (input == null) {
 				return;
 			}
+			// [2.2.4]: Hệ thống nhận và kiểm tra các thông số người dùng đã nhập.
 			validateConfig(input.getRows(), input.getCols(), input.getMines());
+			// [2.2.5]: Hệ thống tạo cấu hình màn chơi từ các thông số nhận từ người dùng.
 			GameConfig config = new GameConfig(input.getRows(), input.getCols(), input.getMines());
 			startNewGame(config);
 		} catch (NumberFormatException ex) {
@@ -371,16 +382,22 @@ public class BoardController {
 	}
 
 	private void validateConfig(int rows, int cols, int mines) {
+		// [2.4.1]: Hệ thống hiển thị thông báo “Số hàng phải lớn hơn 0”
 		if (rows <= 0)
 			throw new IllegalArgumentException("Số hàng phải lớn hơn 0!");
+		// [2.5.1]: Hệ thống hiển thị thông báo “Số hàng tối đa là 50”
 		else if (rows > 50)
 			throw new IllegalArgumentException("Số hàng tối đa là 50!");
+		// [2.6.1]: Hệ thống hiển thị thông báo “Số cột phải lớn hơn 0”
 		if (cols <= 0)
 			throw new IllegalArgumentException("Số cột phải lớn hơn 0!");
+		// [2.8.1]: Hệ thống hiển thị thông báo “Số hàng tối đa là 50”
 		else if (cols > 50)
 			throw new IllegalArgumentException("Số cột tối đa là 50!");
+		// [2.6.1]: Hệ thống hiển thị thông báo “Số cột phải lớn hơn 0”
 		if (mines <= 0)
 			throw new IllegalArgumentException("Số mìn phải lớn hơn 0!");
+		// [2.7.1]: Hệ thống hiển thị thông báo “Số mìn không được vượt quá 80% số ô”
 		else if (mines > rows * cols * 0.8)
 			throw new IllegalArgumentException("Số mìn không được vượt quá 80% số ô!");
 	}

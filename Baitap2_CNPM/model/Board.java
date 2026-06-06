@@ -7,7 +7,11 @@ import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
-/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, xóa thuộc tính difficulity cũng như các get, set của nó **/
+
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, xóa thuộc tính
+ * difficulity cũng như các get, set của nó
+ **/
 public class Board implements Serializable {
 	private Cell[][] grid;
 	private int rows;
@@ -17,7 +21,7 @@ public class Board implements Serializable {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
-	
+
 	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
 
@@ -42,7 +46,7 @@ public class Board implements Serializable {
 		}
 	}
 
-public String exportData() {
+	public String exportData() {
 		try {
 			// 4.1.1. Tạo stream output
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -52,10 +56,10 @@ public String exportData() {
 			// 4.1.3. Serialize toàn bộ bảng
 			oos.writeObject(this);
 			oos.close();
-			
+
 			// 4.1.4. Encode Base64
 			String data = Base64.getEncoder().encodeToString(baos.toByteArray());
-			
+
 			// 4.1.5. Thêm version
 			return SAVE_VERSION + "," + data;
 
@@ -64,15 +68,15 @@ public String exportData() {
 			return null;
 		}
 	}
-	
-	// 5.0.6. Board xử lý  dữ liệu
+
+	// 5.0.6. Board xử lý dữ liệu
 	public static Board importData(String input) {
 		// 5.2.1 Người chơi nhấn Cancel hoặc nhập chuỗi trống
 		if (input == null || input.trim().isEmpty()) {
 			return null;
 		}
 		try {
-			
+
 			String data = input.trim();
 			int version = 1;
 			// Hỗ trợ version
