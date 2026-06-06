@@ -25,7 +25,8 @@ import model.CustomGameInput;
 import model.GameState;
 
 /**
- * 5/6/2026 - Mai Vũ Thành Hiển: Thêm jmenuitem custom.
+ * 5/6/2026 - Mai Vũ Thành Hiển: Thêm jmenuitem custom, thêm phương thức
+ * showCustomDialog().
  **/
 public class BoardView extends JFrame {
 	private JPanel p1, p2, p11, p12, p13;
@@ -54,6 +55,8 @@ public class BoardView extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu gameMenu = new JMenu("Game");
+		// Chọn độ khó khi đang chơi
+		// [2.1.1]/[2.1.2] Giao diện các jmenuitem, nhận lựa chọn độ khó từ người chơi.
 		JMenu gameMenu2 = new JMenu("New Game");
 		easy = new JMenuItem("Easy");
 		medium = new JMenuItem("Medium");
@@ -417,6 +420,9 @@ public class BoardView extends JFrame {
 		this.hintBtn = hintBtn;
 	}
 
+	// Chọn độ khó từ khi đang chơi
+	// [2.2.1]: Hệ thống hiển thị nơi cho người chơi nhập các thông số tùy chỉnh gồm
+	// số hàng, số cột và số mìn.
 	public CustomGameInput showCustomDialog() {
 
 		JTextField rowField = new JTextField("9");

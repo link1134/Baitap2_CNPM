@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Tạo class CustomGameInput.
+ **/
 public class CustomGameInput {
 	private int rows;
 	private int cols;

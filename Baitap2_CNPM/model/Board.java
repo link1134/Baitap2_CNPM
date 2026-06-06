@@ -25,6 +25,8 @@ public class Board implements Serializable {
 	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
 
+	// Constructor board, dùng cho [1.1.2] cả "Tạo màn chơi khi đang trong ván game"
+	// và "Tạo màn chơi khi đang ở start menu"
 	public Board(GameConfig config) {
 		this.config = config;
 		this.rows = config.getRows();

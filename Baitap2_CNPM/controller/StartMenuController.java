@@ -34,12 +34,16 @@ public class StartMenuController {
 				// TODO Auto-generated method stub
 				try {
 					// [2.1.4]: Hệ thống khởi tạo cấu hình tương ứng với độ khó người chơi chọn.
+					// Tạo ván chơi mới ở start menu.
+					// [1.1.1] Hệ thống nhận cấu hình màn chơi từ Use Case UC_02_CD "Chọn độ khó".
 					GameConfig config = getSelectedConfig();
-
+					// [1.1.2] Hệ thống tạo bàn chơi mới tương ứng với cấu hình đã nhận.
 					Board board = new Board(config);
+					// [1.1.3] Hệ thống khởi tạo giao diện bàn chơi mới.
+					// [1.1.4] Hệ thống hiển thị bàn chơi mới cho người chơi.
 					BoardView bv = new BoardView(board);
-
 					new BoardController(bv, board);
+					// startMenu được ngừng hoạt động sau khi bàn chơi được khởi tạo.
 					startMenu.dispose();
 
 				} catch (NumberFormatException ex) {
@@ -72,6 +76,7 @@ public class StartMenuController {
 			}
 		});
 	}
+
 	// Chọn độ khó khi đang ở startmenu
 	public GameConfig getSelectedConfig() {
 

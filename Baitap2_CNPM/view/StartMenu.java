@@ -16,9 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import model.Difficulty;
-/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm vào difficultyBox độ khó custom, thêm customPanel để chọn các thông số gồm số bom,
- *  số hàng hay số cột
- *  **/
+
+/**
+ * 5/6/2026 - Mai Vũ Thành Hiển: Thêm vào difficultyBox độ khó custom, thêm
+ * customPanel để chọn các thông số gồm số bom, số hàng hay số cột
+ **/
 public class StartMenu extends JFrame {
 	private LoadData data;
 	private JComboBox<Difficulty> difficultyBox;
@@ -64,6 +66,8 @@ public class StartMenu extends JFrame {
 		difficultyLabel.setAlignmentX(CENTER_ALIGNMENT);
 		centerPanel.add(difficultyLabel);
 		centerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+		// Chọn độ khó ở startmenu
+		// [2.1.1]/[2.1.2] Giao diện các jmenuitem, nhận lựa chọn độ khó từ người chơi.
 		difficultyBox = new JComboBox<>(Difficulty.values());
 		difficultyBox.setMaximumSize(new Dimension(300, 40));
 		difficultyBox.setFont(new Font("Arial", Font.PLAIN, 16));

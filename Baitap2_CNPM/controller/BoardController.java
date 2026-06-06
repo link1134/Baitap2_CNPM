@@ -20,14 +20,17 @@ import model.GameState;
 import view.BoardView;
 
 /**
- * 5/6/2026 - Mai Vũ Thành Hiển: Gắn actionListener cho jmenuitem custom để nó
- * nhảy pop up chọn số bom, số hàng và cột khi chọn.
+ * 5/6/2026 - Mai Vũ Thành Hiển: Gắn thêm actionListener cho jmenuitem custom để
+ * nó nhảy pop up chọn số bom, số hàng và cột khi chọn.
+ * 
  **/
 public class BoardController {
 	private BoardView bv;
 	private Board b;
 	private Timer timer;
 
+	// Constructor BoardController, dùng cho [1.1.3] ở cả "Tạo màn chơi khi đang
+	// trong ván game" và "Tạo màn chơi khi đang ở start menu"
 	public BoardController(BoardView bv, Board b) {
 		this.bv = bv;
 		this.b = b;
@@ -204,10 +207,13 @@ public class BoardController {
 		// khó
 		// [2.1.3]: Hệ thống tiếp nhận lựa chọn
 		// [2.1.4]: Hệ thống khởi tạo cấu hình tương ứng với độ khó người chơi chọn.
+
 		bv.getEasy().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Tạo màn mới khi đang chơi.
+				// [1.1.1] Hệ thống nhận cấu hình màn chơi từ Use Case UC_02_CD "Chọn độ khó".
 				GameConfig easyMode = Difficulty.EASY.getConfig();
 				startNewGame(easyMode);
 			}
@@ -217,6 +223,8 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Tạo màn mới khi đang chơi.
+				// [1.1.1] Hệ thống nhận cấu hình màn chơi từ Use Case UC_02_CD "Chọn độ khó".
 				GameConfig mediumMode = Difficulty.MEDIUM.getConfig();
 				startNewGame(mediumMode);
 			}
@@ -226,6 +234,8 @@ public class BoardController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Tạo màn mới khi đang chơi.
+				// [1.1.1] Hệ thống nhận cấu hình màn chơi từ Use Case UC_02_CD "Chọn độ khó".
 				GameConfig hardMode = Difficulty.HARD.getConfig();
 				startNewGame(hardMode);
 			}
@@ -333,12 +343,16 @@ public class BoardController {
 	}
 
 	private void startNewGame(GameConfig config) {
-
 		if (timer != null) {
+			// Dừng timer đang chạy lại trước khi tạo ván mới để tránh lỗi xảy ra.
 			timer.stop();
 		}
 		bv.dispose();
+		// Tạo màn mới khi đang chơi
+		// [1.1.2] Hệ thống tạo bàn chơi mới tương ứng với cấu hình đã nhận.
 		Board newBoard = new Board(config);
+		// [1.1.3] Hệ thống khởi tạo giao diện bàn chơi mới.
+		// [1.1.4] Hệ thống hiển thị bàn chơi mới cho người chơi.
 		BoardView newView = new BoardView(newBoard);
 		new BoardController(newView, newBoard);
 	}
@@ -372,6 +386,8 @@ public class BoardController {
 			// [2.2.4]: Hệ thống nhận và kiểm tra các thông số người dùng đã nhập.
 			validateConfig(input.getRows(), input.getCols(), input.getMines());
 			// [2.2.5]: Hệ thống tạo cấu hình màn chơi từ các thông số nhận từ người dùng.
+			// Tạo màn mới khi đang chơi.
+			// [1.1.1] Hệ thống nhận cấu hình màn chơi từ Use Case UC_02_CD "Chọn độ khó".
 			GameConfig config = new GameConfig(input.getRows(), input.getCols(), input.getMines());
 			startNewGame(config);
 		} catch (NumberFormatException ex) {
