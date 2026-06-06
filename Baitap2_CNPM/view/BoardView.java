@@ -37,7 +37,7 @@ public class BoardView extends JFrame {
 	private JButton smileBtn;
 	private JButton hintBtn;
 	private LabelNumber lbtime, lbbomb;
-	private JMenuItem easy, medium, hard, custom, exit, importItem, exportItem, pauseItem;
+	private JMenuItem easy, medium, hard, custom, exit, importItem, exportItem, pauseItem, statisticsItem;
 
 	public BoardView(Board board) {
 		this.board = board;
@@ -63,11 +63,14 @@ public class BoardView extends JFrame {
 		importItem = new JMenuItem("Import");
 		exportItem = new JMenuItem("Export");
 		pauseItem = new JMenuItem("Pause");
+		statisticsItem = new JMenuItem("Statistics");
+		
 		gameMenu2.add(easy);
 		gameMenu2.add(medium);
 		gameMenu2.add(hard);
 		gameMenu2.add(custom);
 		gameMenu.add(pauseItem);
+		gameMenu.add(statisticsItem);
 		gameMenu.add(importItem);
 		gameMenu.add(exportItem);
 		gameMenu.addSeparator();
@@ -415,6 +418,14 @@ public class BoardView extends JFrame {
 
 	public void setHintBtn(JButton hintBtn) {
 		this.hintBtn = hintBtn;
+	}
+	
+	public JMenuItem getStatisticsItem() {
+		return statisticsItem;
+	}
+
+	public void setStatisticsItem(JMenuItem statisticsItem) {
+		this.statisticsItem = statisticsItem;
 	}
 
 	public CustomGameInput showCustomDialog() {
