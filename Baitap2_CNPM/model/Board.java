@@ -23,6 +23,7 @@ public class Board implements Serializable {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
+	private transient GameStatistics statistics;
 
 	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
@@ -35,6 +36,7 @@ public class Board implements Serializable {
 
 		this.gameState = GameState.RUNNING;
 		this.elapsedTime = 0;
+		this.statistics = new GameStatistics();
 
 		createBoard();
 	}
@@ -202,6 +204,9 @@ public class Board implements Serializable {
 
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
+	}
+	public GameStatistics getStatistics() {
+		return statistics;
 	}
 
 	public void reveal(int r, int c) {
