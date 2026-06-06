@@ -1,28 +1,37 @@
 package model;
 
-/** 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, thêm constructor gameconfig và chỉnh sửa lại cho hoạt động với
- * game config.
- *  **/
+/**
+ * Enum Difficulty dùng để định nghĩa các mức độ khó của trò chơi.
+ * Mỗi độ khó gồm:
+ * - số dòng
+ * - số cột
+ * - mật độ mìn
+ */
 public enum Difficulty {
 
-	EASY(new GameConfig(9, 9, 10)), MEDIUM(new GameConfig(16, 16, 40)), HARD(new GameConfig(16, 30, 99)), CUSTOM(null);
+    EASY(9, 9, 0.12),
+    MEDIUM(16, 16, 0.16),
+    HARD(16, 30, 0.20);
 
-	private final GameConfig config;
+    private final int rows;
+    private final int cols;
+    private final double mineDensity;
 
-	Difficulty(GameConfig config) {
-		this.config = config;
-	}
+    Difficulty(int rows, int cols, double mineDensity) {
+        this.rows = rows;
+        this.cols = cols;
+        this.mineDensity = mineDensity;
+    }
 
-	public GameConfig getConfig() {
-		if (config == null) {
-			return null;
-		}
+    public int getRows() {
+        return rows;
+    }
 
-		return new GameConfig(config.getRows(), config.getCols(), config.getMineCount());
-	}
+    public int getCols() {
+        return cols;
+    }
 
-	@Override
-	public String toString() {
-		return name();
-	}
+    public double getMineDensity() {
+        return mineDensity;
+    }
 }
