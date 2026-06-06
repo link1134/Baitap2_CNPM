@@ -18,6 +18,7 @@ import model.Difficulty;
 import model.GameConfig;
 import model.GameState;
 import view.BoardView;
+import model.GameStatistics;
 
 /**
  * 5/6/2026 - Mai Vũ Thành Hiển: Gắn thêm actionListener cho jmenuitem custom để
@@ -85,6 +86,16 @@ public class BoardController {
 				}
 			}
 		});
+		// Statistics
+		if (bv.getStatisticsItem() != null) {
+			bv.getStatisticsItem().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (b.getStatistics() != null) {
+						b.getStatistics().showStatistics();
+					}
+				}
+			});
 		bv.getSmileBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -317,7 +328,7 @@ public class BoardController {
 			}
 		}
 	}
-
+	}
 	protected void updateView() {
 		bv.refreshBoard();
 	}
@@ -372,7 +383,10 @@ public class BoardController {
 	public void setB(Board b) {
 		this.b = b;
 	}
-
+	public GameStatistics getStatistics() {
+		return statistics;
+	}
+	
 	private void startCustomGame() {
 		try {
 			// [2.2.1]: Hệ thống hiển thị nơi cho người chơi nhập các thông số tùy chỉnh gồm

@@ -8,6 +8,8 @@ import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
 
+import model.GameStatistics;
+
 /**
  * 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, xóa thuộc tính
  * difficulity cũng như các get, set của nó
@@ -21,6 +23,7 @@ public class Board implements Serializable {
 	private boolean firstMove = true;
 	private GameState gameState;
 	private int elapsedTime;
+	private transient GameStatistics statistics;
 
 	private GameConfig config;
 	private static final int SAVE_VERSION = 1;
@@ -35,6 +38,7 @@ public class Board implements Serializable {
 
 		this.gameState = GameState.RUNNING;
 		this.elapsedTime = 0;
+		this.statistics = new GameStatistics();
 
 		createBoard();
 	}
@@ -47,6 +51,38 @@ public class Board implements Serializable {
 			}
 		}
 	}
+	public void chord(int r, int c) {
+		if (gameState != GameState.RUNNING) {
+			return;
+		}
+		if (r < 0 || r >= rows || c < 0 || c >= cols) {
+			return;
+		}
+
+		Cell cell = grid[r][c];
+		if (!cell.isRevealed() || cell.getNearbyMines() == 0 || cell.isMine()) {
+			return;
+		}
+
+		int flaggedCount = countFlaggedNeighbors(r, c);
+		if (flaggedCount == cell.getNearbyMines()) {
+			int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
+			int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+			for (int i = 0; i < 8; i++) {
+				int nr = r + dr[i];
+				int nc = c + dc[i];
+				if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) {
+					continue;
+				}
+				Cell neighbor = grid[nr][nc];
+				if (!neighbor.isRevealed() && !neighbor.isFlagged()) {
+					reveal(nr, nc);
+				}
+			}
+		}
+	}
+
 
 	public String exportData() {
 		try {
@@ -171,6 +207,9 @@ public class Board implements Serializable {
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
 	}
+	public GameStatistics getStatistics() {
+		return statistics;
+	}
 
 	public void reveal(int r, int c) {
 
@@ -197,6 +236,7 @@ public class Board implements Serializable {
 			revealAllMines();
 			// 3.7: Chuyển trạng thái của bàn chơi hiện tại thành LOSE, tức thua cuộc.
 			gameState = GameState.LOSE;
+			statistics.recordLoss(); //Ghi lại dữ liệu thua
 			return;
 		}
 		// 3.8 đến 3.10: Xử lí trường hợp nếu ô rỗng và những ô xung quanh không có mìn
@@ -209,6 +249,7 @@ public class Board implements Serializable {
 			// 3.10: Nếu game đã thắng, đặt trạng thái của bàn chơi thành WIN, tức thắng
 			// cuộc
 			gameState = GameState.WIN;
+			statistics.recordWin();
 		}
 	}
 
