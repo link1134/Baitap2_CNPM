@@ -369,7 +369,10 @@ public class BoardController {
 	public void setB(Board b) {
 		this.b = b;
 	}
-
+	public GameStatistics getStatistics() {
+		return statistics;
+	}
+	
 	private void startCustomGame() {
 		try {
 			// [2.2.1]: Hệ thống hiển thị nơi cho người chơi nhập các thông số tùy chỉnh gồm
