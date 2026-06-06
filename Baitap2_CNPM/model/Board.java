@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.util.Base64;
 import java.io.Serializable;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
 import model.GameStatistics;
 
@@ -102,7 +103,8 @@ public class Board implements Serializable {
 			return SAVE_VERSION + "," + data;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Lỗi khi xuất dữ liệu game!\n" + e.getMessage(),
+					"Lỗi Export", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 	}
@@ -134,8 +136,8 @@ public class Board implements Serializable {
 			return board;
 			// Bắt ngoại lệ
 		} catch (Exception e) {
-			System.err.println("Lỗi khi import save: " + e.getMessage());
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Lỗi khi nhập dữ liệu save!\n" + e.getMessage(),
+					"Lỗi Import", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 	}

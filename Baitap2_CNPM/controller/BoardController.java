@@ -178,9 +178,7 @@ public class BoardController {
 				// 5.0.7. Kiểm tra dữ liệu hợp lệ
 				// 5.1.1. Dữ liệu save không hợp lệ
 				if (importedBoard == null) {
-					// 5.1.2. Hiển thị thông báo lỗi
-					JOptionPane.showMessageDialog(bv, "Dữ liệu save không hợp lệ!", "Import thất bại",
-							JOptionPane.ERROR_MESSAGE);
+					// 5.1.2. importData() đã hiển thị thông báo lỗi chi tiết
 					// 5.1.3. Use case kết thúc
 					return;
 				}

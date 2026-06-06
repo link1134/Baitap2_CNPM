@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class LoadData {
 
@@ -50,7 +51,8 @@ public class LoadData {
             listImage.put("voCung", img.getSubimage(120, 0, 13, 23));
             listImage.put("tich", img.getSubimage(140, 49, 7, 7));
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Không thể tải dữ liệu hình ảnh!\n" + e.getMessage(),
+                    "Lỗi tài nguyên", JOptionPane.ERROR_MESSAGE);
         }
     }
 
