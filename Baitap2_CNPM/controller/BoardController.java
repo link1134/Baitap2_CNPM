@@ -383,9 +383,6 @@ public class BoardController {
 	public void setB(Board b) {
 		this.b = b;
 	}
-	public GameStatistics getStatistics() {
-		return statistics;
-	}
 	
 	private void startCustomGame() {
 		try {
