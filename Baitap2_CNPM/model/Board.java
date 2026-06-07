@@ -4,12 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Base64;
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Random;
 import javax.swing.JOptionPane;
-
-import model.GameStatistics;
 
 /**
  * 5/6/2026 - Mai Vũ Thành Hiển: Thêm thuộc tính config, xóa thuộc tính
@@ -258,6 +256,10 @@ public class Board implements Serializable {
 	// ─── 4. ĐẶT CỜ (UC_04_DC) ─────────────────────────────────────────────
 	public void handlePlaceFlag(int r, int c) {
 		Cell cell = grid[r][c];
+		// 4.0.5 Guard: chỉ đặt nếu ô chưa có cờ (tránh flagCount sai)
+		if (cell.isFlagged()) return;
+		// Giới hạn đặt cờ không vượt quá số mìn
+		if (flagCount >= mineCount) return;
 		// 4.0.6 Hệ thống thực hiện hành động đặt cờ vào ô đó.
 		cell.setFlagged(true);
 		// 4.0.7 Hệ thống tiến hành tăng số lượng cờ đã đặt trên bàn chơi.
@@ -270,6 +272,8 @@ public class Board implements Serializable {
 	// ─── 8. GỠ CỜ (UC_04_GC) ─────────────────────────────────────────────
 	public void handleRemoveFlag(int r, int c) {
 		Cell cell = grid[r][c];
+		// 8.1.5 Guard: chỉ gỡ nếu ô đã có cờ (tránh flagCount âm)
+		if (!cell.isFlagged()) return;
 		// 8.1.6 Hệ thống thực hiện hành động gỡ bỏ cờ khỏi ô (Cell) đó.
 		cell.setFlagged(false);
 		// 8.1.7 Hệ thống tiến hành giảm số lượng cờ đã sử dụng xuống (tương đương với
