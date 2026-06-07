@@ -313,6 +313,9 @@ public class BoardController {
 							// (Board).
 							b.toggleFlag(r, c);
 						}
+						else if (button == MouseEvent.BUTTON2) { // Middle click - CHORDING
+							b.chord(r, c);
+						}
 						// 3.11: Phương thức gọi view cập nhật giao diện
 						// 4.0.10 Bộ điều khiển yêu cầu cập nhật lại giao diện (hiển thị hình lá cờ tại
 						// ô vừa nhấp và cập nhật bộ đếm cờ).
