@@ -313,7 +313,7 @@ public class BoardController {
 							// (Board).
 							b.toggleFlag(r, c);
 						}
-						else if (button == MouseEvent.BUTTON2) { // Middle click - CHORDING
+						else if (e.getButton() == MouseEvent.BUTTON2) { // Middle click - CHORDING
 							b.chord(r, c);
 						}
 						// 3.11: Phương thức gọi view cập nhật giao diện
