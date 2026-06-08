@@ -91,8 +91,10 @@ public class BoardController {
 			bv.getStatisticsItem().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					// 8.0.1 Người chơi chọn "Statistics" trong menu Game
+		            // 8.0.2 Hệ thống gọi Board để lấy đối tượng thống kê
 					if (b.getStatistics() != null) {
-						b.getStatistics().showStatistics();
+						b.getStatistics().showStatistics(); //từ 8.0.3 đến 8.0.5
 					}
 				}
 			});
