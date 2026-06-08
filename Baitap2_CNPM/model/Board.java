@@ -51,19 +51,23 @@ public class Board implements Serializable {
 		}
 	}
 	public void chord(int r, int c) {
+		// 3.5.1 Người chơi click chuột giữa vào ô đã mở có số
 		if (gameState != GameState.RUNNING) {
 			return;
 		}
+		
 		if (r < 0 || r >= rows || c < 0 || c >= cols) {
 			return;
 		}
 
 		Cell cell = grid[r][c];
+		// 3.5.2 Kiểm tra điều kiện chording
 		if (!cell.isRevealed() || cell.getNearbyMines() == 0 || cell.isMine()) {
 			return;
 		}
 
 		int flaggedCount = countFlaggedNeighbors(r, c);
+		// 3.4.3 Nếu số cờ đúng bằng số mìn lân cận → thực hiện chording
 		if (flaggedCount == cell.getNearbyMines()) {
 			int[] dr = {-1, -1, -1, 0, 0, 1, 1, 1};
 			int[] dc = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -76,6 +80,7 @@ public class Board implements Serializable {
 				}
 				Cell neighbor = grid[nr][nc];
 				if (!neighbor.isRevealed() && !neighbor.isFlagged()) {
+					// 3.4.4 Gọi reveal cho từng ô lân cận
 					reveal(nr, nc);
 				}
 			}
