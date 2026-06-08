@@ -207,6 +207,9 @@ public class Board implements Serializable {
 	public void setGameState(GameState gameState) {
 		this.gameState = gameState;
 	}
+	/**
+	 * UC_08_TS - Trả về đối tượng thống kê
+	 */
 	public GameStatistics getStatistics() {
 		return statistics;
 	}
@@ -236,7 +239,7 @@ public class Board implements Serializable {
 			revealAllMines();
 			// 3.7: Chuyển trạng thái của bàn chơi hiện tại thành LOSE, tức thua cuộc.
 			gameState = GameState.LOSE;
-			statistics.recordLoss(); //Ghi lại dữ liệu thua
+			statistics.recordLoss();  // 8.3.1 Hệ thống gọi phương thức recordLoss()
 			return;
 		}
 		// 3.8 đến 3.10: Xử lí trường hợp nếu ô rỗng và những ô xung quanh không có mìn
@@ -249,7 +252,7 @@ public class Board implements Serializable {
 			// 3.10: Nếu game đã thắng, đặt trạng thái của bàn chơi thành WIN, tức thắng
 			// cuộc
 			gameState = GameState.WIN;
-			statistics.recordWin();
+			statistics.recordWin(); // 8.2.1 Hệ thống gọi phương thức recordWin()
 		}
 	}
 
